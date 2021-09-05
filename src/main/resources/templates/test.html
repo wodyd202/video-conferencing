@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebRTC Demo</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+</head>
+<body onbeforeunload="disconnect();">
+<div id="selectedVideosContainer">
+    <video id="remoteView" autoplay="autoplay">></video>
+    <video id="selfView" autoplay="autoplay">></video>
+</div>
+<div id="remoteVideosContainer"></div>
+<input id="roomid"/>
+<button id="enterRoomBtn">입장</button>
+<script src='/static/js/adapter-latest.js'></script>
+<script src='/static/js/main.js'></script>
+</body>
+</html>
