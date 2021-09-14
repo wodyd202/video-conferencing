@@ -1,4 +1,4 @@
-package com.ljy.videoclass.classroom.domain;
+package com.ljy.videoclass.classroom.domain.value;
 
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -17,6 +17,10 @@ public class ClassroomCode implements Serializable {
 
     public static ClassroomCode create(){
         return new ClassroomCode(UUID.randomUUID().toString());
+    }
+
+    public static ClassroomCode of(String code) {
+        return new ClassroomCode(code);
     }
 
     public String get() {

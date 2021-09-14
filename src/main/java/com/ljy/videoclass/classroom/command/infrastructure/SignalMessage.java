@@ -1,4 +1,4 @@
-package com.ljy.videoclass.classroom;
+package com.ljy.videoclass.classroom.command.infrastructure;
 
 public class SignalMessage {
     private String type;

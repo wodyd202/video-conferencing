@@ -2,14 +2,227 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout/default-layout">
+      layout:decorator="layout/main-layout">
 <th:block layout:fragment="css">
+    <link href="css/index.css" rel="stylesheet" type="text/css">
 </th:block>
-
 <div layout:fragment="content">
-    <h1>content</h1>
+    <div class="container">
+        <!-- Content Row -->
+        <div class="row">
+            <!-- Content Column -->
+            <div class="col-lg-12 mb-4">
+                <!-- Color System -->
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-primary text-white shadow" id="myClass">
+                            <div class="card-body">
+                                <span>
+                                    <h3>내 강의</h3>
+                                    <div class="text-white-50 small">
+                                        <i class="fa fa-chalkboard-teacher"></i>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-success text-white shadow">
+                            <div class="card-body">
+                                <span>
+                                    <h3>참여중인 강의</h3>
+                                    <div class="text-white-50 small">
+                                        <i class="fa fa-chalkboard"></i>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-info text-white shadow">
+                            <div class="card-body" data-toggle="modal" data-target="#addClassModal">
+                                <span>
+                                    <h3>강의 개설</h3>
+                                    <div class="text-white-50 small">
+                                        <i class="fa fa-plus-square"></i>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-warning text-white shadow">
+                            <div class="card-body">
+                                <span>
+                                    <h3>과제관</h3>
+                                    <div class="text-white-50 small">
+                                        <i class="fa fa-file-alt"></i>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addClassModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">강의 개설</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="email" class="form-control form-control-user" id="classTitle"
+                               placeholder="수업명을 입력해주세요.">
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <label>시작 시각:</label>
+                            <select class="form-control-user form-control" id="startHour">
+                                <option>0</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                                <option>9</option>
+                                <option>10</option>
+                                <option>11</option>
+                                <option>12</option>
+                                <option>13</option>
+                                <option>14</option>
+                                <option>15</option>
+                                <option>16</option>
+                                <option>17</option>
+                                <option>18</option>
+                                <option>19</option>
+                                <option>20</option>
+                                <option>21</option>
+                                <option>22</option>
+                                <option>23</option>
+                                <option>24</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>종료 시각:</label>
+                            <select class="form-control-user form-control" id="endHour">
+                                <option>0</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                                <option>9</option>
+                                <option>10</option>
+                                <option>11</option>
+                                <option>12</option>
+                                <option>13</option>
+                                <option>14</option>
+                                <option>15</option>
+                                <option>16</option>
+                                <option>17</option>
+                                <option>18</option>
+                                <option>19</option>
+                                <option>20</option>
+                                <option>21</option>
+                                <option>22</option>
+                                <option>23</option>
+                                <option>24</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-outline-primary btn-circle btn-lg day-of-week" data-dayOfWeek="MONDAY">월</button>
+                        <button class="btn btn-outline-primary btn-circle btn-lg day-of-week" data-dayOfWeek="TUESDAY">화</button>
+                        <button class="btn btn-outline-primary btn-circle btn-lg day-of-week" data-dayOfWeek="WEDNESDAY">수</button>
+                        <button class="btn btn-outline-primary btn-circle btn-lg day-of-week" data-dayOfWeek="THURSDAY">목</button>
+                        <button class="btn btn-outline-primary btn-circle btn-lg day-of-week" data-dayOfWeek="FRIDAY">금</button>
+                        <button class="btn btn-outline-primary btn-circle btn-lg day-of-week" data-dayOfWeek="SATURDAY">토</button>
+                        <button class="btn btn-outline-primary btn-circle btn-lg day-of-week" data-dayOfWeek="SUNDAY">일</button>
+                    </div>
+                    <hr>
+                    <button class="btn btn-primary btn-user btn-block" id="openClassBtn">
+                        수업 개설
+                    </button>
+                    <button class="btn btn-danger btn-user btn-block" data-dismiss="modal" id="addClassroomCencelBtn">
+                        돌아가기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<div layout:fragment="scripts">
+    <script>
+        const selectDayOfWeeks = [];
+        init();
 
-<th:block layout:fragment="script">
-</th:block>
+        function init(){
+            Array.prototype.forEach.call(document.getElementsByClassName("day-of-week"), (elem) => {
+                elem.addEventListener("click", (e)=>{
+                    dayOfWeekClickHandler(e.target);
+                });
+            });
+            document.getElementById("openClassBtn").addEventListener("click",()=>{
+                const title = document.getElementById("classTitle");
+                const startHour = document.getElementById("startHour");
+                const endHour = document.getElementById("endHour");
+
+                const classroom = {
+                    title : title.value,
+                    classDateInfo : {
+                        dayOfWeeks : selectDayOfWeeks,
+                        startHour : startHour.value,
+                        endHour : endHour.value
+                    }
+                };
+
+                $.ajax({
+                    method : "post",
+                    url : "api/classroom",
+                    contentType : "application/json",
+                    data : JSON.stringify(classroom),
+                    success : (data)=>{
+                        $("#msgTitle").text('등 록');
+                        $("#msgBody").text('등록 완료');
+                        $("#addClassroomCencelBtn").click();
+                        $('#msgBox').modal();
+                    },
+                    error : (data)=>{
+                        $("#msgTitle").text('오 류');
+                        if(data['responseJSON'] === undefined){
+                            $("#msgBody").text(data['responseText']);
+                        }else{
+                            $("#msgBody").text(data['responseJSON'][0]);
+                        }
+                        $('#msgBox').modal();
+                    }
+                })
+            });
+        }
+
+        function dayOfWeekClickHandler(dom){
+            const classList = dom.classList;
+            // 선택 안됨
+            if(classList.contains("btn-outline-primary")){
+                classList.add("btn-primary");
+                classList.remove("btn-outline-primary");
+                selectDayOfWeeks.push(dom.dataset.dayofweek);
+            }else{
+                classList.add("btn-outline-primary");
+                classList.remove("btn-primary");
+                selectDayOfWeeks.splice(selectDayOfWeeks.indexOf(dom.dataset.dayofweek),1);
+            }
+        }
+    </script>
+</div>
 </html>

@@ -1,4 +1,4 @@
-package com.ljy.videoclass.classroom;
+package com.ljy.videoclass.classroom.command.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -6,7 +6,6 @@ public class Utils {
     private Utils() {
     }
 
-    // Jackson JSON converter
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     public static SignalMessage getObject(final String message) throws Exception {

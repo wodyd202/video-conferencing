@@ -1,4 +1,4 @@
-package com.ljy.videoclass.user;
+package com.ljy.videoclass.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;

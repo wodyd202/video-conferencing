@@ -1,4 +1,4 @@
-package com.ljy.videoclass.classroom.domain;
+package com.ljy.videoclass.classroom.domain.value;
 
 import com.ljy.videoclass.classroom.domain.exception.InvalidClassTitleException;
 import org.springframework.util.StringUtils;

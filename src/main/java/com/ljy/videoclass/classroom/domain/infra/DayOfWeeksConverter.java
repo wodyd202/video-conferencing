@@ -1,4 +1,4 @@
-package com.ljy.videoclass.classroom;
+package com.ljy.videoclass.classroom.domain.infra;
 
 import javax.persistence.AttributeConverter;
 import java.time.DayOfWeek;

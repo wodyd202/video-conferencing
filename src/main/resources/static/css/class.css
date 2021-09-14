@@ -1,24 +1,4 @@
-.card {
-    height: 300px;
-}
-.card-body {
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor:pointer;
-}
-.card-body:hover {
-    transition: .3s;
-    box-shadow: 0px 0px 14px #4195fc;
-}
-.fa {
-    font-size: 120px;
-}
-body {
-    background: url("http://kyungmin.ac.kr/DATA/board/235/1592470189907KxtD3H.jpg") no-repeat 50% 50% fixed;
-    background-size: cover;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
+.user {
+    height: 210px;
+    background: black;
 }

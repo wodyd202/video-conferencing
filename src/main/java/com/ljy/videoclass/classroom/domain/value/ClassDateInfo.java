@@ -1,32 +1,34 @@
-package com.ljy.videoclass.classroom.domain;
+package com.ljy.videoclass.classroom.domain.value;
 
+import com.ljy.videoclass.classroom.domain.ChangeClassDateInfo;
+import com.ljy.videoclass.classroom.domain.exception.ClassTimeOverlapException;
 import com.ljy.videoclass.classroom.domain.exception.InvalidClassDateInfoException;
-import com.ljy.videoclass.classroom.domain.infra.DayOfWeeksConverter;
+import com.ljy.videoclass.classroom.domain.read.ClassDateInfoModel;
 
-import javax.persistence.Convert;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.DayOfWeek;
 import java.util.Objects;
-import java.util.Set;
 
 @Embeddable
 public class ClassDateInfo {
-    @Convert(converter = DayOfWeeksConverter.class)
-    private final Set<DayOfWeek> dayOfWeeks;
+    @Enumerated(EnumType.STRING)
+    private final DayOfWeek dayOfWeek;
     private final int startHour,endHour;
 
-    protected ClassDateInfo(){dayOfWeeks =null; startHour = 0; endHour = 0;}
+    protected ClassDateInfo(){dayOfWeek =null; startHour = 0; endHour = 0;}
 
-    private ClassDateInfo(Set<DayOfWeek> dayOfWeeks, int startHour, int endHour) {
-        verifyNotEmptyDayOfWeeks(dayOfWeeks);
-        validation(startHour, endHour);
-        this.dayOfWeeks = dayOfWeeks;
-        this.startHour = startHour;
-        this.endHour = endHour;
+    public ClassDateInfo(ChangeClassDateInfo classDateInfo) {
+        verifyNotEmptyDayOfWeeks(classDateInfo.getDayOfWeek());
+        validation(classDateInfo.getStartHour(), classDateInfo.getEndHour());
+        this.dayOfWeek = classDateInfo.getDayOfWeek();
+        this.startHour = classDateInfo.getStartHour();
+        this.endHour = classDateInfo.getEndHour();
     }
 
-    public static final String EMPTY_DAY_OF_WEEKS = "수업 요일을 [월,화,수,목,금,토,일] 중 하나 이상 입력해주세요.";
-    private void verifyNotEmptyDayOfWeeks(Set<DayOfWeek> dayOfWeeks) {
+    public static final String EMPTY_DAY_OF_WEEKS = "수업 요일을 [월,화,수,목,금,토,일] 중 하나를 입력해주세요.";
+    private void verifyNotEmptyDayOfWeeks(DayOfWeek dayOfWeeks) {
         if(Objects.isNull(dayOfWeeks)){
             throw new InvalidClassDateInfoException(EMPTY_DAY_OF_WEEKS);
         }
@@ -49,41 +51,33 @@ public class ClassDateInfo {
         }
     }
 
-    public static ClassDateInfo withDayOfWeeksAndHours(Set<DayOfWeek> dayOfWeeks, int startHour, int endHour) {
-        return new ClassDateInfo(dayOfWeeks, startHour, endHour);
-    }
-
-    public int getEndHour() {
-        return endHour;
-    }
-
-    public int getStartHour() {
-        return startHour;
-    }
-
-    public Set<DayOfWeek> getDayOfWeeks() {
-        return dayOfWeeks;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClassDateInfo that = (ClassDateInfo) o;
-        return startHour == that.startHour && endHour == that.endHour && Objects.equals(dayOfWeeks, that.dayOfWeeks);
+        return startHour == that.startHour && endHour == that.endHour && Objects.equals(dayOfWeek, that.dayOfWeek);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dayOfWeeks, startHour, endHour);
+        return Objects.hash(dayOfWeek, startHour, endHour);
     }
 
     @Override
     public String toString() {
         return "ClassDateInfo{" +
-                "dayOfWeeks=" + dayOfWeeks +
+                "dayOfWeeks=" + dayOfWeek +
                 ", startHour=" + startHour +
                 ", endHour=" + endHour +
                 '}';
+    }
+
+    public ClassDateInfoModel toModel() {
+        return ClassDateInfoModel.builder()
+                .dayOfWeek(dayOfWeek)
+                .startHour(startHour)
+                .endHour(endHour)
+                .build();
     }
 }

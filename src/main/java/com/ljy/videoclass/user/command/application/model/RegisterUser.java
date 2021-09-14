@@ -1,4 +1,4 @@
-package com.ljy.user.command.application.model;
+package com.ljy.videoclass.user.command.application.model;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,10 +7,12 @@ import lombok.Getter;
 public class RegisterUser {
     private String userId;
     private String password;
+    private String name;
 
     @Builder
-    public RegisterUser(String userId, String password) {
+    public RegisterUser(String userId, String password, String name) {
         this.userId = userId;
         this.password = password;
+        this.name = name;
     }
 }

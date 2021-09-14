@@ -1,11 +1,10 @@
-package com.ljy.videoclass.user;
+package com.ljy.videoclass.user.command.application;
 
-import com.ljy.videoclass.user.command.application.UserMapper;
 import com.ljy.videoclass.user.command.application.model.RegisterUser;
-import com.ljy.videoclass.user.command.application.model.UserModel;
-import com.ljy.videoclass.user.command.domain.RegisterUserValidator;
-import com.ljy.videoclass.user.command.domain.User;
-import com.ljy.videoclass.user.command.domain.UserRepository;
+import com.ljy.videoclass.user.domain.RegisterUserValidator;
+import com.ljy.videoclass.user.domain.User;
+import com.ljy.videoclass.user.domain.model.UserModel;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,19 +14,25 @@ public class RegisterUserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RegisterUserValidator registerUserValidator;
+    private final PasswordEncoder passwordEncoder;
 
     public RegisterUserService(UserRepository userRepository,
                                UserMapper userMapper,
-                               RegisterUserValidator registerUserValidator) {
+                               RegisterUserValidator registerUserValidator,
+                               PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.registerUserValidator = registerUserValidator;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserModel register(RegisterUser registerUser) {
         User user = userMapper.mapFrom(registerUser);
         user.register(registerUserValidator);
+        user.encodePassword(passwordEncoder);
         userRepository.save(user);
-        return new UserModel(user);
+        return UserModel.builder()
+                .userId(user.getId())
+                .build();
     }
 }

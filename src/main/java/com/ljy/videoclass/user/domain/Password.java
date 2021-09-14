@@ -1,6 +1,6 @@
-package com.ljy.videoclass.user.command.domain;
+package com.ljy.videoclass.user.domain;
 
-import com.ljy.videoclass.user.command.domain.exception.InvalidPasswordException;
+import com.ljy.videoclass.user.domain.exception.InvalidPasswordException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 
@@ -18,7 +18,7 @@ public class Password {
         this.pw = pw;
     }
 
-    private static final String EMPTY_PW = "비밀번호를 입력해주세요.";
+    static final String EMPTY_PW = "비밀번호를 입력해주세요.";
     private void verifyNotEmptyPw(String pw) {
         if(!StringUtils.hasText(pw)){
             throw new InvalidPasswordException(EMPTY_PW);

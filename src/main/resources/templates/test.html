@@ -6,11 +6,14 @@
 </head>
 <body onbeforeunload="disconnect();">
 <div id="selectedVideosContainer">
-    <video id="remoteView" autoplay="autoplay">></video>
-    <video id="selfView" autoplay="autoplay">></video>
+    <video id="remoteView" autoplay="autoplay"></video>
+    <video id="selfView" autoplay="autoplay"></video>
 </div>
 <div id="remoteVideosContainer"></div>
 <input id="roomid"/>
+<button id="camera">카메라</button>
+<button id="mic">마이크</button>
+<button id="display">화면 공유</button>
 <button id="enterRoomBtn">입장</button>
 <script src='/static/js/adapter-latest.js'></script>
 <script src='/static/js/main.js'></script>

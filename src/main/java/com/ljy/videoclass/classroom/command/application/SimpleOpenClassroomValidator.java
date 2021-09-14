@@ -1,10 +1,9 @@
-package com.ljy.videoclass.classroom;
+package com.ljy.videoclass.classroom.command.application;
 
-import com.ljy.videoclass.classroom.command.application.ClassroomRepository;
-import com.ljy.videoclass.classroom.domain.ClassDateInfo;
-import com.ljy.videoclass.classroom.domain.Register;
+import com.ljy.videoclass.classroom.domain.value.ClassDateInfo;
+import com.ljy.videoclass.classroom.domain.OpenClassroomValidator;
+import com.ljy.videoclass.classroom.domain.value.Register;
 import org.springframework.stereotype.Component;
-
 
 @Component
 public class SimpleOpenClassroomValidator implements OpenClassroomValidator {
@@ -14,8 +13,12 @@ public class SimpleOpenClassroomValidator implements OpenClassroomValidator {
         this.classroomRepository = classroomRepository;
     }
 
+    /**
+     * @param register
+     * @param classDateInfo
+     * - 강의 등록 제약
+     */
     @Override
     public void validation(Register register, ClassDateInfo classDateInfo) {
-
     }
 }

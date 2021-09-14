@@ -1,5 +1,5 @@
-const PORT = 8080;
-const MAPPING = "/room";
+const PORT = 8443;
+const MAPPING = "/class";
 const peerConnectionConfig = {
     'iceServers': [
         {'urls': 'stun:stun.l.google.com:19302'}
@@ -12,25 +12,31 @@ var connections = {};
 var uuidInBig;
 var selfView = document.getElementById("selfView");
 var container = document.getElementById("remoteVideosContainer");
+var cameraFlag = true;
+var micFlag = false;
 
 document.getElementById("enterRoomBtn").addEventListener("click",()=>{
     init(document.getElementById("roomid").value);
 });
 
-/**
- * this initiate websocket connection
- * it is caled on page reload
- */
-function init(roomId) {
+document.getElementById("camera").addEventListener("click", ()=>{
+    cameraFlag = !cameraFlag;
+    localStream.getVideoTracks()[0].enabled = cameraFlag;
+});
 
-    // get a local stream, show it in a self-view and add it to be sent
-    navigator.mediaDevices.getUserMedia({video: true, audio: false})
+document.getElementById("mic").addEventListener("click", ()=>{
+    micFlag = !micFlag;
+    localStream.getAudioTracks()[0].enabled = micFlag;
+});
+
+function init(roomId) {
+    navigator.mediaDevices.getUserMedia({video: true, audio: true})
         .then(function (stream) {
         console.log("Stream OK");
         localStream = stream;
         selfView.srcObject = stream;
 
-        ws = new WebSocket('wss://192.168.45.56:' + PORT + MAPPING + "/" + roomId);
+        ws = new WebSocket('wss://192.168.45.161:' + PORT + MAPPING + "/" + roomId);
         ws.onmessage = processWsMessage;
         ws.onopen = logMessage;
         ws.onclose = logMessage;
@@ -67,7 +73,6 @@ function handleInit(signal) {
     var peerId = signal.sender;
     var connection = getRTCPeerConnectionObject(peerId);
 
-    // make an offer, and send the SDP to sender.
     connection.createOffer().then(function (sdp) {
         connection.setLocalDescription(sdp);
         console.log("-----------------------------------------");
@@ -100,9 +105,7 @@ function handleOffer(signal) {
     var connection = getRTCPeerConnectionObject(peerId);
     connection.setRemoteDescription(new RTCSessionDescription(signal.data)).then(function () {
         console.log('Setting remote description by offer from ' + peerId);
-        // create an answer for the peedId.
         connection.createAnswer().then( function(sdp) {
-            // and after callback set it locally and send to peer
             connection.setLocalDescription(sdp);
             sendMessage({
                 type: "answer",
@@ -147,7 +150,6 @@ function getRTCPeerConnectionObject(uuid) {
 
     connection.addStream(localStream);
 
-    // handle on ice candidate
     connection.onicecandidate = function (event) {
         console.log("candidate is: " + event.candidate);
         if (event.candidate) {
@@ -160,7 +162,6 @@ function getRTCPeerConnectionObject(uuid) {
         }
     };
 
-    // handle on track / onaddstream
     connection.onaddstream = function(event) {
         console.log('Received new stream from ' + uuid);
         var video = document.createElement("video");
@@ -206,6 +207,3 @@ function disconnect() {
         ws.close();
     }
 }
-
-// start
-// window.onload = init;

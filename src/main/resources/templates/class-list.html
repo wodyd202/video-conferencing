@@ -2,14 +2,159 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout/default-layout">
+      layout:decorator="layout/main-layout">
 <th:block layout:fragment="css">
+    <link href="css/class-list.css" rel="stylesheet" type="text/css">
 </th:block>
 
 <div layout:fragment="content">
-    <h1>content</h1>
-</div>
+    <div class="container-fluid">
+        <div class="text-right">
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                <i class="fas fa-book-reader fa-sm text-white-50"></i>&nbsp;&nbsp;강의 개설</a>
+        </div>
+        <br>
+        <!-- Content Row -->
+        <div class="row">
 
-<th:block layout:fragment="script">
-</th:block>
+            <!-- Content Column -->
+            <div class="col-lg-12 mb-4">
+                <!-- Color System -->
+                <div class="row">
+                    <div class="col-lg-3 mb-4">
+                        <div class="card-header bg-info"></div>
+                        <div class="card shadow">
+                            <div class="card-body">
+                                            <span>
+                                                <h3><strong>클라우드 플렛폼</strong></h3>
+                                                <div>
+                                                    (월) 13:00 ~ 16:00
+                                                </div>
+                                                <hr>
+                                                <button type="button" class="btn btn-success btn-sm">과 제</button>
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#studentListModal">학 생</button>
+                                                <button type="button" class="btn btn-secondary btn-sm">수 정</button>
+                                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-4">
+                        <div class="card-header bg-warning"></div>
+                        <div class="card shadow">
+                            <div class="card-body">
+                                            <span>
+                                                <h3><strong>클라우드 플렛폼</strong></h3>
+                                                <div>
+                                                    (월) 13:00 ~ 16:00
+                                                </div>
+                                                <hr>
+                                                <button type="button" class="btn btn-success btn-sm">과 제</button>
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#studentListModal">학 생</button>
+                                                <button type="button" class="btn btn-secondary btn-sm">수 정</button>
+                                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-4">
+                        <div class="card-header bg-success"></div>
+                        <div class="card shadow">
+                            <div class="card-body">
+                                            <span>
+                                                <h3><strong>클라우드 플렛폼</strong></h3>
+                                                <div>
+                                                    (월) 13:00 ~ 16:00
+                                                </div>
+                                                <hr>
+                                                <button type="button" class="btn btn-success btn-sm">과 제</button>
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#studentListModal">학 생</button>
+                                                <button type="button" class="btn btn-secondary btn-sm">수 정</button>
+                                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-4">
+                        <div class="card-header bg-primary"></div>
+                        <div class="card shadow">
+                            <div class="card-body">
+                                            <span>
+                                                <h3><strong>클라우드 플렛폼</strong></h3>
+                                                <div>
+                                                    (월) 13:00 ~ 16:00
+                                                </div>
+                                                <hr>
+                                                <button type="button" class="btn btn-success btn-sm">과 제</button>
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#studentListModal">학 생</button>
+                                                <button type="button" class="btn btn-secondary btn-sm">수 정</button>
+                                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-4">
+                        <div class="card-header bg-danger"></div>
+                        <div class="card shadow">
+                            <div class="card-body">
+                                            <span>
+                                                <h3><strong>클라우드 플렛폼</strong></h3>
+                                                <div>
+                                                    (월) 13:00 ~ 16:00
+                                                </div>
+                                                <hr>
+                                                <button type="button" class="btn btn-success btn-sm">과 제</button>
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#studentListModal">학 생</button>
+                                                <button type="button" class="btn btn-secondary btn-sm">수 정</button>
+                                            </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="studentListModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">학 생</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body" style="overflow: auto; height: 500px;">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h5><span class="badge badge-primary">참 여</span></h5>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">이재용</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">윤지원</span>
+                        </div>
+                        <div class="col-lg-6">
+                            <h5><span class="badge badge-secondary">신 청</span></h5>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">이재용</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">윤지원</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">이재용</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">윤지원</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">이재용</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">윤지원</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">이재용</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">윤지원</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">윤지원</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">윤지원</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">윤지원</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">윤지원</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">윤지원</span>
+                            <span class="list-group-item"><img class="img-profile rounded-circle" src="img/undraw_profile.svg" style="width: 30px; margin-right: 10px;">윤지원</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">닫 기</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 </html>

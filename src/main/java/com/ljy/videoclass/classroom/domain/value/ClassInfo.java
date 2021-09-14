@@ -1,6 +1,7 @@
-package com.ljy.videoclass.classroom.domain;
+package com.ljy.videoclass.classroom.domain.value;
 
-import lombok.Builder;
+import com.ljy.videoclass.classroom.domain.ChangeClassInfo;
+import com.ljy.videoclass.classroom.domain.read.ClassInfoModel;
 
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
@@ -16,13 +17,12 @@ public class ClassInfo {
 
     protected ClassInfo(){title = null; color = null;}
 
-    @Builder
-    public ClassInfo(Title title, Color color) {
-        this.title = title;
-        if(Objects.isNull(color)){
+    public ClassInfo(ChangeClassInfo classInfo) {
+        this.title = Title.of(classInfo.getTitle());
+        if(Objects.isNull(classInfo.getColor())){
             this.color = Color.PRIMARY;
         }else{
-            this.color = color;
+            this.color = classInfo.getColor();
         }
     }
 
@@ -45,5 +45,12 @@ public class ClassInfo {
     @Override
     public int hashCode() {
         return Objects.hash(title, color);
+    }
+
+    public ClassInfoModel toModel() {
+        return ClassInfoModel.builder()
+                .title(title.get())
+                .color(color)
+                .build();
     }
 }

@@ -1,5 +1,5 @@
-package com.ljy.videoclass.classroom.domain;
+package com.ljy.videoclass.classroom.domain.value;
 
 public enum Color {
-    PRIMARY
+    PRIMARY,SUCCESS,INFO,WARNING,DANGER,SECONDARY,DARK
 }

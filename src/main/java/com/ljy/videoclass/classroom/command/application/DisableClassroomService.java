@@ -1,4 +1,4 @@
-package com.ljy.videoclass.classroom;
+package com.ljy.videoclass.classroom.command.application;
 
 import com.ljy.videoclass.classroom.command.application.ClassroomRepository;
 import com.ljy.videoclass.classroom.domain.Classroom;
@@ -7,6 +7,8 @@ import com.ljy.videoclass.classroom.domain.value.ClassroomCode;
 import com.ljy.videoclass.classroom.domain.value.Register;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.ljy.videoclass.classroom.command.application.ClassroomServiceHelper.findByCodeAndRegister;
 
 @Service
 @Transactional
@@ -18,7 +20,7 @@ public class DisableClassroomService {
     }
 
     public void disable(ClassroomCode classroomCode, Register register) {
-        Classroom classroom = classroomRepository.findByCodeAndRegister(classroomCode, register).orElseThrow(ClassroomNotFoundException::new);
+        Classroom classroom = findByCodeAndRegister(classroomRepository,classroomCode,register);
         classroom.disable();
         classroomRepository.save(classroom);
     }

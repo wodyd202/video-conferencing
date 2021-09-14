@@ -119,5 +119,19 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+    <th:block layout:fragment="scripts">
+    </th:block>
+    <div class="modal fade" id="msgBox">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="msgTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="msgBody">
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

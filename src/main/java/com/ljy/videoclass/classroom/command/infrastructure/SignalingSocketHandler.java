@@ -1,4 +1,4 @@
-package com.ljy.videoclass.classroom;
+package com.ljy.videoclass.classroom.command.infrastructure;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +17,6 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
     private static final String TYPE_INIT = "init";
     private static final String TYPE_LOGOUT = "logout";
 
-    /**
-     * Cache of sessions by users.
-     */
     private Map<String, WebSocketSession> connectedUsers = new HashMap<>();
     private Map<String, List<String>> roomMap = new HashMap<>();
     private Map<String, String> userMap = new HashMap<>();
@@ -28,7 +25,6 @@ public class SignalingSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         LOG.info("[" + session.getId() + "] Connection established " + session.getId());
 
-        // send the message to all other peers, that new men its being registered
         final SignalMessage newMenOnBoard = new SignalMessage();
         newMenOnBoard.setType(TYPE_INIT);
         newMenOnBoard.setSender(session.getId());

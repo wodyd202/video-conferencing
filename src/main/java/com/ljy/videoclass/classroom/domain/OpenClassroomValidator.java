@@ -1,10 +1,7 @@
-package com.ljy.videoclass.classroom;
+package com.ljy.videoclass.classroom.domain;
 
-import com.ljy.videoclass.classroom.domain.ClassDateInfo;
-import com.ljy.videoclass.classroom.domain.Classroom;
-import com.ljy.videoclass.classroom.domain.Register;
-
-import java.util.List;
+import com.ljy.videoclass.classroom.domain.value.ClassDateInfo;
+import com.ljy.videoclass.classroom.domain.value.Register;
 
 public interface OpenClassroomValidator {
     void validation(Register register, ClassDateInfo classDateInfo);

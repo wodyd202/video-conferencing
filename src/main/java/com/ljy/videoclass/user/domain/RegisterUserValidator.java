@@ -1,6 +1,7 @@
-package com.ljy.videoclass.user.command.domain;
+package com.ljy.videoclass.user.domain;
 
-import com.ljy.videoclass.user.command.domain.exception.AlreadyExistUserException;
+import com.ljy.videoclass.user.command.application.UserRepository;
+import com.ljy.videoclass.user.domain.exception.AlreadyExistUserException;
 import org.springframework.stereotype.Component;
 
 @Component
