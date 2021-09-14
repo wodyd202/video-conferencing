@@ -1,4 +1,4 @@
-package com.ljy.videoclass.user.domain;
+package com.ljy.videoclass.user.domain.value;
 
 import com.ljy.videoclass.user.domain.exception.InvalidUserIdException;
 import org.springframework.util.StringUtils;
@@ -21,7 +21,7 @@ public class UserId implements Serializable {
         this.id = id;
     }
 
-    static final String EMPTY_STUDENT_NUMBER = "학번을 입력해주세요.";
+    public static final String EMPTY_STUDENT_NUMBER = "학번을 입력해주세요.";
     private void verifyNotEmptyStudentNumber(String id) {
         if(!StringUtils.hasText(id)){
             throw new InvalidUserIdException(EMPTY_STUDENT_NUMBER);

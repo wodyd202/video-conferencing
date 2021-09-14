@@ -1,6 +1,6 @@
 package com.ljy.videoclass.user.domain.infra;
 
-import com.ljy.videoclass.user.domain.Password;
+import com.ljy.videoclass.user.domain.value.Password;
 
 import javax.persistence.AttributeConverter;
 

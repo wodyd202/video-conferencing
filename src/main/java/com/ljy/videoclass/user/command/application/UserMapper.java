@@ -1,10 +1,10 @@
 package com.ljy.videoclass.user.command.application;
 
-import com.ljy.videoclass.user.command.application.model.RegisterUser;
-import com.ljy.videoclass.user.domain.Password;
+import com.ljy.videoclass.user.domain.RegisterUser;
+import com.ljy.videoclass.user.domain.value.Password;
 import com.ljy.videoclass.user.domain.User;
-import com.ljy.videoclass.user.domain.UserId;
-import com.ljy.videoclass.user.domain.Username;
+import com.ljy.videoclass.user.domain.value.UserId;
+import com.ljy.videoclass.user.domain.value.Username;
 import org.springframework.stereotype.Component;
 
 @Component

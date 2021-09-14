@@ -1,4 +1,4 @@
-package com.ljy.videoclass.user.domain;
+package com.ljy.videoclass.user.domain.value;
 
 import com.ljy.videoclass.user.domain.exception.InvalidNameException;
 import org.springframework.util.StringUtils;
@@ -18,7 +18,7 @@ public class Username {
         this.name = name;
     }
 
-    static final String EMPTY_NAME = "이름을 입력해주세요.";
+    public static final String EMPTY_NAME = "이름을 입력해주세요.";
     private void verifyNotEmptyName(String name) {
         if(!StringUtils.hasText(name)){
             throw new InvalidNameException(EMPTY_NAME);

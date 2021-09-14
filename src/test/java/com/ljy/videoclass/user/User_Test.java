@@ -1,23 +1,21 @@
 package com.ljy.videoclass.user;
 
-import com.ljy.videoclass.user.command.application.RegisterUserService;
-import com.ljy.videoclass.user.command.application.UserRepository;
-import com.ljy.videoclass.user.command.application.model.RegisterUser;
-import com.ljy.videoclass.user.command.application.UserMapper;
+import com.ljy.videoclass.user.command.application.*;
+import com.ljy.videoclass.user.domain.RegisterUser;
 import com.ljy.videoclass.user.domain.*;
-import com.ljy.videoclass.user.domain.exception.AlreadyExistUserException;
-import com.ljy.videoclass.user.domain.exception.InvalidNameException;
-import com.ljy.videoclass.user.domain.exception.InvalidPasswordException;
-import com.ljy.videoclass.user.domain.exception.InvalidUserIdException;
-import com.ljy.videoclass.user.domain.model.UserModel;
+import com.ljy.videoclass.user.domain.exception.*;
+import com.ljy.videoclass.user.domain.read.UserModel;
+import com.ljy.videoclass.user.domain.value.Password;
+import com.ljy.videoclass.user.domain.value.UserId;
+import com.ljy.videoclass.user.domain.value.Username;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Optional;
+
+import static com.ljy.videoclass.user.UserFixture.aUser;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -95,8 +93,9 @@ public class User_Test {
                 .build();
         UserMapper userMapper = new UserMapper();
         User user = userMapper.mapFrom(registerUser);
-        assertEquals(user.getId().get(), "00000000");
-        assertEquals(user.getName().get(), "홍길동");
+        UserModel userModel = user.toModel();
+        assertEquals(userModel.getUserId(), "00000000");
+        assertEquals(userModel.getUsername(), "홍길동");
     }
 
     @Test
@@ -110,25 +109,4 @@ public class User_Test {
            validator.validation(UserId.of("00000000"));
         });
     }
-
-    @Nested
-    @SpringBootTest
-    class RegisterUserService_Test {
-
-        @Autowired
-        RegisterUserService registerUserService;
-
-        @Test
-        void register(){
-            RegisterUser registerUser = RegisterUser.builder()
-                    .userId("00000001")
-                    .password("000000")
-                    .name("홍길동")
-                    .build();
-            UserModel user = registerUserService.register(registerUser);
-            assertNotNull(user);
-        }
-
-    }
-
 }

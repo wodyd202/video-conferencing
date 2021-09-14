@@ -1,7 +1,7 @@
 package com.ljy.videoclass.user.command.infrastructure;
 
 import com.ljy.videoclass.user.domain.User;
-import com.ljy.videoclass.user.domain.UserId;
+import com.ljy.videoclass.user.domain.value.UserId;
 import com.ljy.videoclass.user.command.application.UserRepository;
 import com.ljy.videoclass.user.domain.QUser;
 import com.querydsl.jpa.impl.JPAQueryFactory;

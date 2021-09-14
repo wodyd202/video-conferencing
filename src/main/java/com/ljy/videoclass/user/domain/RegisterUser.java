@@ -1,4 +1,4 @@
-package com.ljy.videoclass.user.command.application.model;
+package com.ljy.videoclass.user.domain;
 
 import lombok.Builder;
 import lombok.Getter;

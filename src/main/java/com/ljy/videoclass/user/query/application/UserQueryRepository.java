@@ -1,6 +1,6 @@
 package com.ljy.videoclass.user.query.application;
 
-import com.ljy.videoclass.user.domain.model.UserModel;
+import com.ljy.videoclass.user.domain.read.UserModel;
 
 import java.util.Optional;
 

@@ -1,7 +1,7 @@
-package com.ljy.videoclass.runner;
+package com.ljy.videoclass;
 
 import com.ljy.videoclass.user.command.application.RegisterUserService;
-import com.ljy.videoclass.user.command.application.model.RegisterUser;
+import com.ljy.videoclass.user.domain.RegisterUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

@@ -20,8 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class ChangeClassDateInfoService_Test {
     @Autowired OpenClassroomService openClassroomService;
-    @Autowired
-    ChangeClassDateInfoService changeClassDateInfoService;
+    @Autowired ChangeClassDateInfoService changeClassDateInfoService;
 
     @Test
     void changeClassDateInfo(){

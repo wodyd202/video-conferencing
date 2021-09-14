@@ -2,6 +2,7 @@ package com.ljy.videoclass.user.domain;
 
 import com.ljy.videoclass.user.command.application.UserRepository;
 import com.ljy.videoclass.user.domain.exception.AlreadyExistUserException;
+import com.ljy.videoclass.user.domain.value.UserId;
 import org.springframework.stereotype.Component;
 
 @Component

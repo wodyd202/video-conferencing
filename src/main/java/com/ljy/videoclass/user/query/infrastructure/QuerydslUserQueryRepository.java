@@ -1,9 +1,9 @@
 package com.ljy.videoclass.user.query.infrastructure;
 
-import com.ljy.videoclass.user.domain.Password;
-import com.ljy.videoclass.user.domain.UserId;
+import com.ljy.videoclass.user.domain.value.Password;
+import com.ljy.videoclass.user.domain.value.UserId;
 import com.ljy.videoclass.user.query.application.UserQueryRepository;
-import com.ljy.videoclass.user.domain.model.UserModel;
+import com.ljy.videoclass.user.domain.read.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

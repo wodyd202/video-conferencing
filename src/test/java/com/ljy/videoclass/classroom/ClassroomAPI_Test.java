@@ -105,12 +105,6 @@ public class ClassroomAPI_Test {
                 .andExpect(resultMatcher);
     }
 
-    @Test
-    void getMyClassroom() throws Exception {
-        mockMvc.perform(get("/api/classroom"))
-                .andExpect(status().isOk());
-    }
-
     @Autowired
     OpenClassroomService openClassroomService;
 

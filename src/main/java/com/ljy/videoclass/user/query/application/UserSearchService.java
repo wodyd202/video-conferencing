@@ -1,6 +1,6 @@
 package com.ljy.videoclass.user.query.application;
 
-import com.ljy.videoclass.user.domain.model.UserModel;
+import com.ljy.videoclass.user.domain.read.UserModel;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
