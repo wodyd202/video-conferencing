@@ -1,9 +1,15 @@
 package com.ljy.videoclass.classroom.query.application;
 
+import com.ljy.videoclass.classroom.domain.exception.ClassroomNotFoundException;
 import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
+import com.ljy.videoclass.classroom.domain.value.ClassroomState;
+import com.ljy.videoclass.classroom.query.model.ClassroomModels;
+import com.ljy.videoclass.classroom.query.model.ClassroomSearchModel;
+import com.ljy.videoclass.core.http.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 @Service
 public class ClassroomSearchService {
@@ -13,7 +19,21 @@ public class ClassroomSearchService {
         this.classroomRepository = classroomRepository;
     }
 
-    public List<ClassroomModel> findByRegister(String register) {
-        return classroomRepository.findByRegister(register);
+    public ClassroomModels findByRegister(ClassroomState state, String register, PageRequest pageRequest) {
+        return ClassroomModels.builder()
+                .classrooms(classroomRepository.findByRegister(state, register, pageRequest))
+                .totalElement(classroomRepository.countByRegister(state ,register))
+                .build();
+    }
+
+    public ClassroomModels findByClassDateAndDayOfWeek(String register, ClassroomSearchModel classroomSearchModel, PageRequest pageRequest) {
+        return ClassroomModels.builder()
+                .classrooms(classroomRepository.findByClassDateAndDayOfWeek(classroomSearchModel,pageRequest,register))
+                .totalElement(classroomRepository.countByClassDateAndDayOfWeek(classroomSearchModel,register))
+                .build();
+    }
+
+    public ClassroomModel findByCodeAndRegister(String classroomCode, String register) {
+        return classroomRepository.findbyCodeAndRegister(classroomCode, register).orElseThrow(ClassroomNotFoundException::new);
     }
 }

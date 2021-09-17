@@ -1,0 +1,469 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/main-layout">
+<th:block layout:fragment="css">
+</th:block>
+<div layout:fragment="content">
+    <section>
+        <div class="container">
+            <div class="rounded-3 py-5 px-md-5 mb-5 bg-white">
+                <div class="text-center mb-5">
+                    <h1 class="fw-bolder">강의 수정</h1>
+                </div>
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-8 col-xl-6 contactForm">
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="title" type="text" placeholder="수업명을 입력해주세요."/>
+                            <label for="title">수업명을 입력해주세요.</label>
+                            <div style="color: red; margin-left: 10px; margin-top: 5px;" id="invalidTitle"></div>
+                        </div>
+                        <div class="accordion mb-3">
+                            <div class="accordion-item">
+                                <h3 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                    강의 일정(option)
+                                </button></h3>
+                                <div class="accordion-collapse collapse show" id="collapseOne" aria-labelledby="classDateAccordion" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="form-floating col-6">
+                                                <input class="form-control" id="startDate" type="date" placeholder="수업 시작일을 입력해주세요."/>
+                                                <label for="startDate">수업 시작일을 입력해주세요.</label>
+                                            </div>
+                                            <div class="form-floating col-6">
+                                                <input class="form-control" id="endDate" type="date" placeholder="수업 종료일을 입력해주세요."/>
+                                                <label for="endDate">수업 종료일을 입력해주세요.</label>
+                                            </div>
+                                        </div>
+                                        <div style="color: red; margin-left: 10px; margin-top: 5px;" id="invalidDate"></div>
+                                        <div class="row mt-3">
+                                            <div class="form-check form-switch" style="position: relative; left: 20px;">
+                                                <input class="form-check-input" type="checkbox" id="autoEnabled" checked>
+                                                <label class="form-check-label" for="autoEnabled">수업 종료일 지나면 자동 비활성화</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" id="description" type="text" placeholder="Enter your message here..." style="height: 10rem" data-sb-validations="required"></textarea>
+                            <label for="description">수업 부가 설명(option)</label>
+                        </div>
+                        <select class="form-select" id="dayOfWeek">
+                            <option selected disabled value="">수업 요일을 선택해주세요.</option>
+                            <option value="MONDAY">월요일</option>
+                            <option value="TUESDAY">화요일</option>
+                            <option value="WEDNESDAY">수요일</option>
+                            <option value="THURSDAY">목요일</option>
+                            <option value="FRIDAY">금요일</option>
+                            <option value="SATURDAY">토요일</option>
+                            <option value="SUNDAY">일요일</option>
+                        </select>
+                        <div style="color: red; margin-left: 10px; margin-top: 5px;" id="invalidDayOfWeek"></div>
+                        <br>
+                        <div class="row">
+                            <div class="col-6">
+                                <select class="form-select" id="startHour">
+                                    <option selected disabled value="">수업 시작 시간을 선택해주세요.</option>
+                                    <option value="0">오전 00:00</option>
+                                    <option value="1">오전 01:00</option>
+                                    <option value="2">오전 02:00</option>
+                                    <option value="3">오전 03:00</option>
+                                    <option value="4">오전 04:00</option>
+                                    <option value="5">오전 05:00</option>
+                                    <option value="6">오전 06:00</option>
+                                    <option value="7">오전 07:00</option>
+                                    <option value="8">오전 08:00</option>
+                                    <option value="9">오전 09:00</option>
+                                    <option value="10">오전 10:00</option>
+                                    <option value="11">오전 11:00</option>
+                                    <option value="12">오후 12:00</option>
+                                    <option value="13">오후 13:00</option>
+                                    <option value="14">오후 14:00</option>
+                                    <option value="15">오후 15:00</option>
+                                    <option value="16">오후 16:00</option>
+                                    <option value="17">오후 17:00</option>
+                                    <option value="18">오후 18:00</option>
+                                    <option value="19">오후 19:00</option>
+                                    <option value="20">오후 20:00</option>
+                                    <option value="21">오후 21:00</option>
+                                    <option value="22">오후 22:00</option>
+                                    <option value="23">오후 23:00</option>
+                                    <option value="24">오후 24:00</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <select class="form-select" id="endHour">
+                                    <option selected disabled value="">수업 종료 시간을 선택해주세요.</option>
+                                    <option value="0">오전 00:00</option>
+                                    <option value="1">오전 01:00</option>
+                                    <option value="2">오전 02:00</option>
+                                    <option value="3">오전 03:00</option>
+                                    <option value="4">오전 04:00</option>
+                                    <option value="5">오전 05:00</option>
+                                    <option value="6">오전 06:00</option>
+                                    <option value="7">오전 07:00</option>
+                                    <option value="8">오전 08:00</option>
+                                    <option value="9">오전 09:00</option>
+                                    <option value="10">오전 10:00</option>
+                                    <option value="11">오전 11:00</option>
+                                    <option value="12">오후 12:00</option>
+                                    <option value="13">오후 13:00</option>
+                                    <option value="14">오후 14:00</option>
+                                    <option value="15">오후 15:00</option>
+                                    <option value="16">오후 16:00</option>
+                                    <option value="17">오후 17:00</option>
+                                    <option value="18">오후 18:00</option>
+                                    <option value="19">오후 19:00</option>
+                                    <option value="20">오후 20:00</option>
+                                    <option value="21">오후 21:00</option>
+                                    <option value="22">오후 22:00</option>
+                                    <option value="23">오후 23:00</option>
+                                    <option value="24">오후 24:00</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="color: red; margin-left: 10px; margin-top: 5px;" id="invalidHour"></div>
+                        <br>
+                        <div class="text-center">
+                                    <span style="margin-right: 10px;">
+                                        대표 색상 선택 :
+                                    </span>
+                            <input type="radio" class="btn-check" value="primary" name="color" id="option1" autocomplete="off" checked>
+                            <label class="rounded-circle btn btn-outline-primary" for="option1">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <input type="radio" class="btn-check" value="secondary" name="color" id="option2" autocomplete="off">
+                            <label class="rounded-circle btn btn-outline-secondary" for="option2">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <input type="radio" class="btn-check" value="danger" name="color" id="option3" autocomplete="off">
+                            <label class="rounded-circle btn btn-outline-danger" for="option3">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <input type="radio" class="btn-check" value="warning" name="color" id="option4" autocomplete="off">
+                            <label class="rounded-circle btn btn-outline-warning" for="option4">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <input type="radio" class="btn-check" value="dark" name="color" id="option5" autocomplete="off">
+                            <label class="rounded-circle btn btn-outline-dark" for="option5">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <input type="radio" class="btn-check" value="success" name="color" id="option6" autocomplete="off">
+                            <label class="rounded-circle btn btn-outline-success" for="option6">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <input type="radio" class="btn-check" value="info" name="color" id="option7" autocomplete="off">
+                            <label class="rounded-circle btn btn-outline-info" for="option7">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        </div>
+                        <br>
+                        <div class="d-grid"><button class="btn btn-primary btn-lg" id="updateBtn">강의 수정</button></div>
+                        <div class="d-grid"><button class="btn btn-danger btn-lg mt-2" id="disableBtn">강의 비활성화</button></div>
+                        <div class="text-center mt-2">
+                            <a href="./main.html" class="text-decoration-none">
+                                메인으로 돌아가기
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="modal fade" id="confirmModal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"  aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="col-lg-12 mb-5 class-box">
+                        <div class="card h-100 shadow border-0">
+                            <div class="card-header progress-bar progress-bar-striped" id="confirmColor"></div>
+                            <div class="card-body p-4">
+                                <h4 class="card-title mb-3"><strong id="confirmTitle"></strong></h4>
+                                <p class="card-text mb-0" id="confirmDescription"></p>
+                            </div>
+                            <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                                <div class="d-flex align-items-end justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <div class="fw-bold">(<span id="confirmDayOfWeek"></span>) <span id="confirmStartHour"></span>:00 ~ <span id="confirmEndHour"></span>:00</div>
+                                    </div>
+                                    <div class="text-muted" id="confirmDate"></div>
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                    정말 위 사항대로 수업을 수정하시겠습니까?
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" id="updateClassBtn">수정</button>
+                    <button class="btn btn-danger btn-sm" data-bs-dismiss="modal">다시 작성</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel2">Modal 2</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Hide this modal and show the first with the button below.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Back to first</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div layout:fragment="scripts">
+    <script>
+        const code = getParameterByName('code');
+
+        // modal
+        const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"), {});
+        const confirmTitle = document.getElementById('confirmTitle');
+        const confirmDayOfWeek = document.getElementById('confirmDayOfWeek');
+        const confirmStartHour = document.getElementById('confirmStartHour');
+        const confirmEndHour = document.getElementById('confirmEndHour');
+        const confirmColor = document.getElementById('confirmColor');
+        const confirmDescription = document.getElementById('confirmDescription');
+        const confirmDate = document.getElementById('confirmDate');
+        //////////////
+
+        const updateBtn = document.getElementById('updateBtn');
+        const title = document.getElementById('title');
+        const dayOfWeek = document.getElementById('dayOfWeek');
+        const startHour = document.getElementById('startHour');
+        const endHour = document.getElementById('endHour');
+        const color = document.getElementsByName('color');
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+        const description = document.getElementById('description');
+        const autoEnabled = document.getElementById('autoEnabled');
+
+        const invalidTitle = document.getElementById('invalidTitle');
+        const invalidHour = document.getElementById('invalidHour');
+        const invalidDayOfWeek = document.getElementById('invalidDayOfWeek');
+        const invalidDate = document.getElementById('invalidDate');
+        /////////////
+
+        const accordionBtn = document.getElementsByClassName('accordion-button')[0];
+
+        const disableBtn = document.getElementById('disableBtn');
+        const updateClassBtn = document.getElementById('updateClassBtn');
+
+        let classOptionalDateInfo;
+
+        init();
+        getData();
+
+        function init(){
+            disableBtn.addEventListener('click', ()=>{
+                showConfirmMessage('정말 해당 강의를 비활성화 하시겠습니까?',()=>{
+                    axios.delete(`./api/classroom/${code}`).then(res=>{
+                        showMessage('비활성화가 완료되었습니다.',()=>{
+                            location.href = './my-class';
+                        });
+                    }).catch(error=>{
+                        showMessage(error.response['data']);
+                    });
+                });
+            });
+
+            title.addEventListener('keyup', ()=>{
+                invalidTitle.innerText = '';
+            })
+
+            dayOfWeek.addEventListener('change', ()=>{
+                invalidDayOfWeek.innerText = '';
+            });
+
+            startHour.addEventListener('change', ()=>{
+                invalidHour.innerText = '';
+            });
+
+            endHour.addEventListener('change', ()=>{
+                invalidHour.innerText = '';
+            });
+
+            updateBtn.addEventListener('click', ()=>{
+                if(validation()){
+                    confirmTitle.innerText = title.value;
+                    confirmEndHour.innerText = endHour.value;
+                    confirmStartHour.innerText = startHour.value;
+                    confirmDayOfWeek.innerText = parseDayOfWeek(dayOfWeek.value);
+                    confirmDescription.innerText = description.value.trim();
+                    confirmColor.classList.forEach(cls=>{
+                        if(cls.startsWith('bg')){
+                            confirmColor.classList.remove(cls);
+                        }
+                    });
+                    confirmColor.classList.add(`bg-${getColor()}`);
+                    if(!accordionBtn.classList.contains('collapsed')){
+                        confirmDate.innerText = `${startDate.value} ~ ${endDate.value}`;
+                    }else{
+                        confirmDate.innerText = '';
+                    }
+                    confirmModal.show();
+                }
+            });
+
+            updateClassBtn.addEventListener('click', ()=>{
+                if(!accordionBtn.classList.contains('collapsed')){
+                    getClassList();
+                }else{
+                    updateClass();
+                }
+            });
+        }
+
+        function getClassList(){
+            axios.get('./api/classroom/exist-by',{
+                params : {
+                    page : 0,
+                    size : 2,
+                    startDate : startDate.value,
+                    endDate : endDate.value,
+                    startHour : startHour.value,
+                    endHour : endHour.value,
+                    dayOfWeek : dayOfWeek.value
+                }
+            }).then(res=>{
+                res = res['data']['response'];
+                if(classOptionalDateInfo !== undefined){
+                    if(classOptionalDateInfo['startDate'] === startDate.value && classOptionalDateInfo['endDate'] === endDate.value){
+                        updateClass();
+                    }else{
+                        if(res['totalElement'] > 0){
+                            confirmModal.hide();
+                            if(res['totalElement'] > 1){
+                                showConfirmMessage(`[${res['classrooms'][0]['classInfo']['title']}] (외 ${res['totalElement']-1}개) 강의가 현재 입력한 날짜와 시간과 겹칩니다.\n그래도 개설하시겠습니까?`,()=>{
+                                    updateClass();
+                                });
+                            }else{
+                                showConfirmMessage(`[${res['classrooms'][0]['classInfo']['title']}] 강의가 현재 입력한 날짜와 시간과 겹칩니다.\n그래도 개설하시겠습니까?`,()=>{
+                                    updateClass();
+                                });
+                            }
+                        }else{
+                            updateClass();
+                        }
+                    }
+                }else{
+                    updateClass();
+                }
+            }).catch(error=>{
+                showMessage(error.response['data']);
+            });
+        }
+
+        function getData(){
+            if(code === null || code.trim() === ''){
+                location.href='./main.html';
+            }
+
+            axios.get(`./api/classroom/${code}`,{
+            }).then(res=>{
+                res = res['data']['response'];
+                const classInfo = res['classInfo'];
+                const classDateInfo = res['classDateInfo'];
+                classOptionalDateInfo = res['classOptionalDateInfo'];
+
+                title.value = classInfo['title'];
+                if(classOptionalDateInfo !== undefined){
+                    startDate.value = classOptionalDateInfo['startDate'];
+                    endDate.value = classOptionalDateInfo['endDate'];
+                    autoEnabled.checked = classOptionalDateInfo['autoEnabled'];
+                }else{
+                    accordionBtn.click();
+                }
+                if(classInfo['description'] !== undefined){
+                    description.value = classInfo['description'];
+                }
+                selectControll(dayOfWeek, classDateInfo['dayOfWeek']);
+                selectControll(startHour, classDateInfo['startHour'].toString());
+                selectControll(endHour, classDateInfo['endHour'].toString());
+                radioControll(color, classInfo['color']);
+            }).catch(error=>{
+                showMessage('존재하지 않는 수업입니다.', ()=>{
+                    location.href='./my-class';
+                });
+            });
+        }
+
+        function updateClass(){
+            confirmModal.hide();
+            const classroom = {
+                changeClassInfo : {
+                    title : title.value,
+                    color : getColor(),
+                    description : description.value.trim() === '' ? null : description.value.trim()
+                },
+                changeClassDateInfo : {
+                    dayOfWeek : dayOfWeek.value,
+                    startHour : startHour.value,
+                    endHour : endHour.value
+                }
+            }
+            if(!accordionBtn.classList.contains('collapsed')){
+                const classOptionalDateInfo = {
+                    autoEnabled : autoEnabled.checked,
+                    startDate : startDate.value,
+                    endDate : endDate.value
+                };
+                classroom['changeClassOptionalDateInfo'] = classOptionalDateInfo;
+            }
+
+            axios.put(`./api/classroom/${code}/all`, classroom, {
+                headers : {
+                    "Content-type" : "application/json"
+                }
+            }).then(res=>{
+                showMessage('강의 수정 완료', ()=>{
+                    location.href = './my-class';
+                });
+            }).catch(error=>{
+                showMessage(error.response['data']);
+            });
+        }
+
+        function validation(){
+            let valid = true;
+            if(title.value.trim() === ''){
+                invalidTitle.innerText = '- 수업명을 입력해주세요.';
+                title.focus();
+                valid = false;
+            }
+            if(dayOfWeek.value === ''){
+                invalidDayOfWeek.innerText = '- 수업 요일을 선택해주세요.';
+                dayOfWeek.focus();
+                valid = false;
+            }
+            if(startHour.value === ''){
+                invalidHour.innerText = '- 수업 시작 시간을 선택해주세요.';
+                startHour.focus();
+                valid = false;
+            }
+            if(endHour.value === ''){
+                invalidHour.innerText = '- 수업 종료 시간을 선택해주세요.';
+                endHour.focus();
+                valid = false;
+            }
+            if(!accordionBtn.classList.contains('collapsed')){
+                if(startDate.value === ''){
+                    invalidDate.innerText = '- 수업 시작일을 선택해주세요.';
+                    startDate.focus();
+                    valid = false;
+                }
+                if(endDate.value === ''){
+                    invalidDate.innerText = '- 수업 종료일을 선택해주세요.';
+                    endDate.focus();
+                    valid = false;
+                }
+            }
+            return valid;
+        }
+
+        function getColor(){
+            let value;
+            color.forEach((node)=>{
+                if(node.checked){
+                    value = node.value;
+                }
+            });
+            return value;
+        }
+    </script>
+</div>
+</html>

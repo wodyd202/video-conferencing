@@ -1,7 +1,6 @@
 package com.ljy.videoclass.classroom.domain.value;
 
 import com.ljy.videoclass.classroom.domain.ChangeClassDateInfo;
-import com.ljy.videoclass.classroom.domain.exception.ClassTimeOverlapException;
 import com.ljy.videoclass.classroom.domain.exception.InvalidClassDateInfoException;
 import com.ljy.videoclass.classroom.domain.read.ClassDateInfoModel;
 

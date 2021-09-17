@@ -1,8 +1,10 @@
 package com.ljy.videoclass.classroom.command.presentation;
 
 import com.ljy.videoclass.classroom.command.application.*;
+import com.ljy.videoclass.classroom.command.application.model.ChangeClassAll;
 import com.ljy.videoclass.classroom.domain.ChangeClassDateInfo;
 import com.ljy.videoclass.classroom.domain.ChangeClassInfo;
+import com.ljy.videoclass.classroom.domain.ChangeClassOptionalDateInfo;
 import com.ljy.videoclass.classroom.domain.OpenClassroom;
 import com.ljy.videoclass.classroom.domain.exception.*;
 import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
@@ -28,6 +30,7 @@ public class ClassroomCommandAPI {
     @Autowired private ActiveClassroomService activeClassroomService;
     @Autowired private ChangeClassroomInfoService changeClassroomInfoService;
     @Autowired private ChangeClassDateInfoService changeClassDateInfoService;
+    @Autowired private ChangeClassOptionalDateInfoService changeClassOptionalDateInfoService;
 
     @PostMapping
     public APIResponse open(@Valid @RequestBody OpenClassroom openClassroom, Errors errors, Principal principal){
@@ -68,12 +71,34 @@ public class ClassroomCommandAPI {
         return new APIResponse(classroomModel, HttpStatus.OK);
     }
 
+    @PutMapping("{classroomCode}/class-optional-date-info")
+    public APIResponse changeClassOptioanlDateInfo(@PathVariable ClassroomCode classroomCode,
+                                                    @RequestBody(required = false) ChangeClassOptionalDateInfo changeClassOptionalDateInfo,
+                                                   Principal principal){
+        ClassroomModel classroomModel = changeClassOptionalDateInfoService.changeClassOptionalDateInfo(changeClassOptionalDateInfo, classroomCode, Register.of(principal.getName()));
+        return new APIResponse(classroomModel, HttpStatus.OK);
+    }
+
+    @PutMapping("{classroomCode}/all")
+    public APIResponse changeAll(@PathVariable ClassroomCode classroomCode,
+                                 @Valid @RequestBody ChangeClassAll changeClassAll,
+                                 Errors errors,
+                                 Principal principal){
+        verifyNotContainsError(errors);
+        ClassroomModel classroomModel = changeClassOptionalDateInfoService.changeClassOptionalDateInfo(changeClassAll.getChangeClassOptionalDateInfo(), classroomCode, Register.of(principal.getName()));
+        classroomModel = changeClassDateInfoService.changeClassDateInfo(changeClassAll.getChangeClassDateInfo(), classroomCode, Register.of(principal.getName()));
+        classroomModel = changeClassroomInfoService.changeClassInfo(changeClassAll.getChangeClassInfo(), classroomCode, Register.of(principal.getName()));
+        return new APIResponse(classroomModel, HttpStatus.OK);
+    }
+
     @ExceptionHandler({
             InvalidClassDateInfoException.class,
             InvalidClassTitleException.class,
-            ClassTimeOverlapException.class,
+            InvalidClassOptionalDateInfoException.class,
+            InvalidDescriptionException.class,
             ClassroomNotFoundException.class,
-            AlreadyDisabledClassException.class
+            AlreadyDisabledClassException.class,
+            AlreadyActiveClassException.class
     })
     public ResponseEntity<String> error(IllegalArgumentException e){
         return ResponseEntity.badRequest().body(e.getMessage());

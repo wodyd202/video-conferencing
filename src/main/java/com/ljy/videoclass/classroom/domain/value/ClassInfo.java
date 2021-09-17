@@ -15,14 +15,24 @@ public class ClassInfo {
     @Enumerated(EnumType.STRING)
     private final Color color;
 
+    private Description description;
+
     protected ClassInfo(){title = null; color = null;}
 
     public ClassInfo(ChangeClassInfo classInfo) {
         this.title = Title.of(classInfo.getTitle());
+        setDescription(classInfo.getDescription());
+
         if(Objects.isNull(classInfo.getColor())){
-            this.color = Color.PRIMARY;
+            this.color = Color.primary;
         }else{
             this.color = classInfo.getColor();
+        }
+    }
+
+    private void setDescription(String description) {
+        if(!Objects.isNull(description)){
+            this.description = Description.of(description);
         }
     }
 
@@ -51,6 +61,7 @@ public class ClassInfo {
         return ClassInfoModel.builder()
                 .title(title.get())
                 .color(color)
+                .description(description != null ? description.get() : null)
                 .build();
     }
 }

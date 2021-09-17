@@ -1,112 +1,106 @@
 package com.ljy.videoclass.user;
 
-import com.ljy.videoclass.user.command.application.*;
-import com.ljy.videoclass.user.domain.RegisterUser;
-import com.ljy.videoclass.user.domain.*;
-import com.ljy.videoclass.user.domain.exception.*;
+import com.ljy.videoclass.user.domain.OauthLoginUser;
+import com.ljy.videoclass.user.domain.User;
+import com.ljy.videoclass.user.domain.exception.InvalidEmailException;
+import com.ljy.videoclass.user.domain.exception.InvalidImageException;
+import com.ljy.videoclass.user.domain.exception.InvalidNameException;
+import com.ljy.videoclass.user.domain.exception.InvalidUserIdException;
+import com.ljy.videoclass.user.domain.read.UserInfoModel;
 import com.ljy.videoclass.user.domain.read.UserModel;
-import com.ljy.videoclass.user.domain.value.Password;
-import com.ljy.videoclass.user.domain.value.UserId;
-import com.ljy.videoclass.user.domain.value.Username;
+import com.ljy.videoclass.user.domain.value.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.Optional;
-
-import static com.ljy.videoclass.user.UserFixture.aUser;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class User_Test {
 
     @Test
-    @DisplayName("학번은 반드시 입력해야함")
-    void emptyStudentNumber(){
-        assertThrows(InvalidUserIdException.class,()->{
+    @DisplayName("사용자 고유 아이디는 반드시 입력해야함")
+    void empty_userId(){
+        assertThrows(InvalidUserIdException.class, ()->{
             UserId.of("");
         });
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"0000000","invalid","00000000 "," 00000000"})
-    @DisplayName("학번은 숫자 8자를 입력해야하고 공백은 허용하지 않음")
-    void invalidStudentNumber(String value){
-        assertThrows(InvalidUserIdException.class,()->{
-            UserId.of(value);
-        });
+    @Test
+    @DisplayName("사용자 고유 아이디 정상 입력")
+    void valid_userId(){
+        UserId userId = UserId.of("사용자아이디");
+        assertEquals(userId, UserId.of("사용자아이디"));
+        assertEquals(userId.get(), "사용자아이디");
     }
 
     @Test
-    void validStudentNumber(){
-        UserId studentNumber = UserId.of("00000000");
-        assertEquals(studentNumber, UserId.of("00000000"));
-        assertEquals("00000000", studentNumber.get());
-    }
-
-    @Test
-    @DisplayName("비밀번호는 공백을 허용하지 않음")
-    void emptyPassword(){
-        assertThrows(InvalidPasswordException.class, ()->{
-            Password.of("");
-        });
-    }
-
-    @Test
-    void validPassword(){
-        Password birth = Password.of("000000");
-        assertEquals(birth, Password.of("000000"));
-        assertEquals("000000", birth.get());
-    }
-
-    @Test
-    @DisplayName("이름은 공백을 허용하지 않음")
-    void emptyName(){
+    @DisplayName("사용자 이름은 반드시 입력해야함")
+    void empty_username(){
         assertThrows(InvalidNameException.class, ()->{
-           Username.of("");
-        });
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "test",
-            "홍길동1",
-            "홍길동 ",
-            " 홍길동",
-            "홍 길 동"
-    })
-    @DisplayName("이름은 조합형 한글 1자 이상 10자 이하만 허용함")
-    void invalidName(String name){
-        assertThrows(InvalidNameException.class,()->{
-           Username.of(name);
+            Username.of("");
         });
     }
 
     @Test
-    void mapFrom() {
-        RegisterUser registerUser = RegisterUser.builder()
-                .userId("00000000")
-                .password("000000")
-                .name("홍길동")
+    @DisplayName("사용자 이름 정상 입력")
+    void valid_username(){
+        Username username = Username.of("홍길동");
+        assertEquals(username, Username.of("홍길동"));
+        assertEquals(username.get(), "홍길동");
+    }
+
+    @Test
+    @DisplayName("사용자 이메일은 반드시 입력해야함")
+    void empty_email(){
+        assertThrows(InvalidEmailException.class, ()->{
+            Email.of("");
+        });
+    }
+
+    @Test
+    @DisplayName("사용자 이메일 정상 입력")
+    void valid_email(){
+        Email email = Email.of("test@google.com");
+        assertEquals(email, Email.of("test@google.com"));
+        assertEquals(email.get(), "test@google.com");
+    }
+
+    @Test
+    @DisplayName("사용자 이미지는 반드시 입력해야함")
+    void empty_image(){
+        assertThrows(InvalidImageException.class,()->{
+            Image.path("");
+        });
+    }
+
+    @Test
+    void userInfo(){
+        UserInfo userInfo = UserInfo.builder()
+                .email(Email.of("email@google.com"))
+                .username(Username.of("홍길동"))
+                .image(Image.path("path"))
                 .build();
-        UserMapper userMapper = new UserMapper();
-        User user = userMapper.mapFrom(registerUser);
-        UserModel userModel = user.toModel();
-        assertEquals(userModel.getUserId(), "00000000");
-        assertEquals(userModel.getUsername(), "홍길동");
+
+        UserInfoModel userInfoModel = userInfo.toModel();
+        assertEquals(userInfoModel.getUsername(), "홍길동");
+        assertEquals(userInfoModel.getEmail(), "email@google.com");
+        assertEquals(userInfoModel.getImage(), "path");
     }
 
     @Test
-    void alreadyExistUser(){
-        UserRepository userRepository = mock(UserRepository.class);
-        when(userRepository.existByUserId(UserId.of("00000000")))
-                .thenReturn(true);
-        RegisterUserValidator validator = new RegisterUserValidator(userRepository);
-
-        assertThrows(AlreadyExistUserException.class,()->{
-           validator.validation(UserId.of("00000000"));
-        });
+    void mapfrom(){
+        OauthLoginUser loginUser = OauthLoginUser.builder()
+                .email("email@google.com")
+                .identifier("identifier")
+                .image("imagePath")
+                .username("홍길동")
+                .build();
+        User user = User.oauthLogin(loginUser);
+        UserModel userModel = user.toModel();
+        assertEquals(userModel.getUserId(), "identifier");
+        assertEquals(userModel.getUserInfo().getImage(), "imagePath");
+        assertEquals(userModel.getUserInfo().getUsername(), "홍길동");
+        assertEquals(userModel.getUserInfo().getEmail(),"email@google.com");
     }
+
 }

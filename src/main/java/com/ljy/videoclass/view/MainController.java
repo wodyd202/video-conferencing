@@ -7,14 +7,29 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MainController {
 
-    @GetMapping("login")
-    public String login(){
-        return "login";
-    }
-
     @GetMapping("main")
     public String main(){
-        return "index";
+        return "main";
+    }
+
+    @GetMapping("my-class")
+    public String myClass(){
+        return "my-class";
+    }
+
+    @GetMapping("my-class-list")
+    public String myClassList(){
+        return "class-config";
+    }
+
+    @GetMapping("update-class")
+    public String updateClass(){
+        return "update-class";
+    }
+
+    @GetMapping("joiner-list")
+    public String joinerList(){
+        return "joiner-list";
     }
 
     @GetMapping("add-class")
@@ -22,18 +37,8 @@ public class MainController {
         return "add-class";
     }
 
-    @GetMapping("test")
-    public String test(){
-        return "test";
-    }
-
-    @GetMapping("my-class-list")
-    public String myClassList(Model model){
-        return "class-list";
-    }
-
-    @GetMapping("class")
-    public String classroom(Model model){
-        return "class";
+    @GetMapping("join-class")
+    public String joinClass(){
+        return "join-class";
     }
 }

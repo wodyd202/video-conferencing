@@ -22,16 +22,32 @@ public class ChangeClassroomInfoService_Test {
     @Autowired ChangeClassroomInfoService changeClassroomInfoService;
 
     @Test
-    @DisplayName("수업 정보 변경")
-    void changeClassInfo(){
+    @DisplayName("수업 설명 포함")
+    void changeClassInfo_contains_description(){
         OpenClassroom openClassroom = aOpenClassroom().build();
         Register register = Register.of("00000000");
         ClassroomModel classroomModel = openClassroomService.open(openClassroom, register);
         classroomModel = changeClassroomInfoService.changeClassInfo(ChangeClassInfo.builder()
-                        .color(Color.SECONDARY)
+                .color(Color.secondary)
+                .title("수정 수업명")
+                .description("수업 설명")
+                .build(),ClassroomCode.of(classroomModel.getCode()), register);
+        assertEquals(classroomModel.getClassInfo().getColor(), Color.secondary);
+        assertEquals(classroomModel.getClassInfo().getTitle(), "수정 수업명");
+        assertEquals(classroomModel.getClassInfo().getDescription(), "수업 설명");
+    }
+
+    @Test
+    @DisplayName("수업 설명 제외")
+    void changeClassInfo_empty_description(){
+        OpenClassroom openClassroom = aOpenClassroom().build();
+        Register register = Register.of("00000000");
+        ClassroomModel classroomModel = openClassroomService.open(openClassroom, register);
+        classroomModel = changeClassroomInfoService.changeClassInfo(ChangeClassInfo.builder()
+                        .color(Color.secondary)
                         .title("수정 수업명")
                 .build(),ClassroomCode.of(classroomModel.getCode()), register);
-        assertEquals(classroomModel.getClassInfo().getColor(), Color.SECONDARY);
+        assertEquals(classroomModel.getClassInfo().getColor(), Color.secondary);
         assertEquals(classroomModel.getClassInfo().getTitle(), "수정 수업명");
     }
 }

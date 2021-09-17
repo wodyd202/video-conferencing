@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -18,12 +19,12 @@ public class QuerydslUserRepository implements UserRepository {
     @Autowired private EntityManager entityManager;
 
     @Override
-    public boolean existByUserId(UserId userId) {
-        Integer integer = jpaQueryFactory.selectOne()
+    public Optional<User> findById(UserId userId) {
+        User user = jpaQueryFactory.select(QUser.user)
                 .from(QUser.user)
                 .where(QUser.user.id().eq(userId))
                 .fetchFirst();
-        return integer != null && integer > 0;
+        return Optional.ofNullable(user);
     }
 
     @Override
@@ -34,4 +35,5 @@ public class QuerydslUserRepository implements UserRepository {
             entityManager.persist(user);
         }
     }
+
 }

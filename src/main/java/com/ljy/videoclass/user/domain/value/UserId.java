@@ -6,7 +6,6 @@ import org.springframework.util.StringUtils;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 @Embeddable
 public class UserId implements Serializable {
@@ -16,24 +15,10 @@ public class UserId implements Serializable {
         id = null;}
 
     private UserId(String id) {
-        verifyNotEmptyStudentNumber(id);
-        validation(id);
+        if(id.isEmpty()){
+            throw new InvalidUserIdException("사용자 아이디를 입력해주세요.");
+        }
         this.id = id;
-    }
-
-    public static final String EMPTY_STUDENT_NUMBER = "학번을 입력해주세요.";
-    private void verifyNotEmptyStudentNumber(String id) {
-        if(!StringUtils.hasText(id)){
-            throw new InvalidUserIdException(EMPTY_STUDENT_NUMBER);
-        }
-    }
-
-    private static final Pattern PATTERN = Pattern.compile("^[\\d]{8}$");
-    private static final String INVALID_STUDENT_NUMBER = "학번은 숫자 8자만 허용합니다.";
-    private void validation(String id) {
-        if(!PATTERN.matcher(id).matches()){
-            throw new InvalidUserIdException(INVALID_STUDENT_NUMBER);
-        }
     }
 
     public static UserId of(String id) {

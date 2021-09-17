@@ -2,136 +2,196 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 >
 <head>
     <meta charset="UTF-8">
-    <title>경민 클래스룸</title>
-    <th:block th:replace="fragment/config :: configFragment" ></th:block>
-</head>
-<body id="page-top">
-    <div>
-        <div id="content-wrapper" class="d-flex flex-column">
-            <div id="content">
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">3+</span>
-                            </a>
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                 aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Alerts Center
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="fas fa-file-alt text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 12, 2019</div>
-                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success">
-                                            <i class="fas fa-donate text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 7, 2019</div>
-                                        $290.29 has been deposited into your account!
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 2, 2019</div>
-                                        Spending Alert: We've noticed unusually high spending for your account.
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-                            </div>
-                        </li>
-
-                        <div class="topbar-divider d-none d-sm-block"></div>
-
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">이재용</span>
-                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
-                            </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </nav>
-                <th:block layout:fragment="content">
-                </th:block>
-            </div>
-        </div>
-    </div>
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-    <th:block layout:fragment="scripts">
+    <th:block th:replace="fragment/config :: configFragment">
     </th:block>
-    <div class="modal fade" id="msgBox">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="msgTitle"></h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body" id="msgBody">
-                </div>
+    <style>
+        body {
+            margin : 0;
+            padding : 0;
+        }
+
+        .bg-video {
+            position : fixed;
+            top : 0;
+            left : 0;
+            min-width : 100%;
+            min-height : 100%;
+            width : auto;
+            height : auto;
+            z-index : -1;
+        }
+
+        .navbar, footer {
+            background: rgb(35,107,175);
+        }
+    </style>
+</head>
+<body class="d-flex flex-column h-100">
+<main class="flex-shrink-0">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container px-5">
+            <a class="navbar-brand" href="./main"><img src="assets/logo.png"/></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="./my-class">내 진행중인 강의</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./join-class">참여중인 강의</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./add-class">강의 개설</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./my-class-list">나의 강의 관리</a></li>
+                    <th:block sec:authorize="isAuthenticated()">
+                        <li class="nav-item"><a class="nav-link" href="./logout">로그아웃</a></li>
+                    </th:block>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="progress" style="z-index: 9999; display: none;" id="progressMain">
+        <div class="progress-bar progress-bar-striped bg-success progress-bar-animated" id="progress" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <th:block layout:fragment="content">
+    </th:block>
+</main>
+<footer class="py-4 mt-auto">
+    <div class="container px-5">
+        <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+            <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; 경민 클래스룸 2021</div></div>
+        </div>
+    </div>
+</footer>
+<div class="modal fade" id="msgBox" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"  aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body" id="msgBoxContent">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger btn-sm" data-bs-target="#msgBox" data-bs-toggle="modal" id="msgBoxYesBtn">확인</button>
             </div>
         </div>
     </div>
+</div>
+<div class="modal fade" id="confirmBox" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"  aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body" id="confirmBoxContent">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success btn-sm" id="confirmBoxYesBtn">예</button>
+                <button class="btn btn-danger btn-sm" data-bs-target="#confirmBox" data-bs-toggle="modal">아니오</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/scripts.js"></script>
+<script>
+    const msgBox = new bootstrap.Modal(document.getElementById("msgBox"), {});
+    const msgBoxContent = document.getElementById('msgBoxContent');
+    const msgBoxYesBtn = document.getElementById('msgBoxYesBtn');
+
+    const confirmBox = new bootstrap.Modal(document.getElementById("confirmBox"), {});
+    const confirmBoxContent = document.getElementById('confirmBoxContent');
+    const confirmBoxYesBtn = document.getElementById('confirmBoxYesBtn');
+
+    const progressBar = document.getElementById('progress');
+    const progressMain = document.getElementById('progressMain');
+
+    function progress(percent,time, callback){
+        progressMain.style.display = '';
+        progressBar.style.width = `${percent}%`;
+        setTimeout(callback,time);
+    }
+
+    function showMessage(message, callback){
+        msgBoxContent.innerText = message;
+        msgBoxYesBtn.addEventListener('click',()=>{
+           callback();
+        });
+        msgBox.show();
+    }
+
+    function showConfirmMessage(message, callback){
+        confirmBoxContent.innerText = message;
+        confirmBoxYesBtn.addEventListener('click',()=>{
+            confirmBox.hide();
+            callback();
+        });
+        confirmBox.show();
+    }
+
+    function selectControll(dom, value){
+        for(let i =0;i<dom.length;i++){
+            if(value === dom[i].value){
+                dom[i].selected = true;
+            }
+        }
+    }
+
+    function radioControll(dom, value){
+        dom.forEach(node=>{
+            if(node.value === value){
+                node.checked = true;
+            }
+        });
+    }
+
+    function getParameterByName(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    function parseDayOfWeek(dayOfWeek){
+        switch (dayOfWeek){
+            case 'MONDAY':
+                return '월';
+            case 'TUESDAY':
+                return '화';
+            case 'WEDNESDAY':
+                return '수';
+            case 'THURSDAY':
+                return '목';
+            case 'FRIDAY':
+                return '금';
+            case 'SATURDAY':
+                return '토';
+            case 'SUNDAY':
+                return '일';
+        }
+    }
+
+    function numberToHour(number){
+        if(number.toString().length < 2){
+            return "0" + number;
+        }
+        return number;
+    }
+
+    function ableloopScroll(callback){
+        function debounce(callback, limit = 100) {
+            let timeout
+            return function(...args) {
+                clearTimeout(timeout)
+                timeout = setTimeout(() => {
+                    callback.apply(this, args)
+                }, limit)
+            }
+        }
+
+        document.addEventListener("scroll", debounce(e => {
+            const { clientHeight, scrollTop, scrollHeight } = e.target.scrollingElement
+            if(clientHeight + scrollTop >= scrollHeight - 100) {
+                callback();
+            }
+        }, 100))
+    }
+</script>
+<th:block layout:fragment="scripts">
+</th:block>
 </body>
 </html>

@@ -15,4 +15,6 @@ public class OpenClassroom {
 
     @Valid
     private ChangeClassDateInfo classDateInfo;
+
+    private ChangeClassOptionalDateInfo classOptionalDateInfo;
 }

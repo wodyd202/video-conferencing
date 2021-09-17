@@ -1,0 +1,112 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/main-layout">
+<th:block layout:fragment="css">
+    <style>
+        .card-right {
+            position: relative;
+            left: 50px;
+        }
+
+        @media (max-width: 600px) {
+            .card-right {
+                left: 0px;
+            }
+        }
+        .shadow {
+            cursor:pointer;
+            background: white;
+            border-radius: 3px;
+        }
+
+        .shadow:hover {
+            transition: .3s;
+            text-shadow: 1px 1px 10px rgb(35,107,175);
+        }
+    </style>
+</th:block>
+<div layout:fragment="content">
+    <th:block th:replace="fragment/bgVideo :: videoFragment">
+    </th:block>
+    <section class="py-5" id="features">
+        <div class="container">
+            <div class="row gx-5">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-8">
+                    <div class="row gx-5 row-cols-1 row-cols-md-2">
+                        <div class="col mb-5 h-100 p-4 shadow" id="myClassBtn">
+                            <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
+                            <h2 class="h5">내 강의</h2>
+                            <p class="mb-0">내가 개설한 강의 목록을 볼 수 있습니다.</p>
+                        </div>
+                        <div class="col mb-5 h-100 p-4 shadow card-right" id="joinClassBtn">
+                            <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
+                            <h2 class="h5">참여중인 강의</h2>
+                            <p class="mb-0">현재 수강중인 강의 목록을 볼 수 있습니다.</p>
+                        </div>
+                        <div class="col mb-5 h-100 p-4 shadow" id="addClassBtn">
+                            <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                            <h2 class="h5">강의 개설</h2>
+                            <p class="mb-0">새로운 강의를 개설해보세요.</p>
+                        </div>
+                        <div class="col mb-5 h-100 p-4 shadow card-right" data-bs-toggle="modal" data-bs-target="#joinReqeustModal">
+                            <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                            <h2 class="h5">강의 참여</h2>
+                            <p class="mb-0">다른 사용자의 강의를 참여해보세요</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="modal fade" id="joinReqeustModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="code" type="text" placeholder="사용자에게 부여받은 수업 코드를 입력해주세요."/>
+                        <label for="code">사용자에게 부여받은 수업 코드를 입력해주세요.</label>
+                        <div style="color: red; margin-left: 10px; margin-top: 5px;" id="invalidCode"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" id="joinRequestBtn">수강 신청</button>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div layout:fragment="scripts">
+    <script>
+        const joinReqeustModal = new bootstrap.Modal(document.getElementById("joinReqeustModal"), {});
+        const code = document.getElementById('code');
+        const invalidCode = document.getElementById('invalidCode');
+
+        const joinRequestBtn = document.getElementById('joinRequestBtn');
+        const myClassBtn = document.getElementById('myClassBtn');
+        const addClassBtn = document.getElementById('addClassBtn');
+        const joinClassBtn = document.getElementById('joinClassBtn');
+        myClassBtn.addEventListener('click', ()=>{
+            location.href = "./my-class";
+        });
+        addClassBtn.addEventListener('click', ()=>{
+            location.href = './add-class';
+        });
+        joinClassBtn.addEventListener('click', ()=>{
+            location.href = './join-class';
+        });
+        joinRequestBtn.addEventListener('click', ()=>{
+            if(code.value.trim() === ''){
+                invalidCode.innerText = '- 수업 코드를 입력해주세요.';
+                code.focus();
+                return;
+            }
+            code.value = '';
+            invalidCode.innerText = '';
+            joinReqeustModal.hide();
+        });
+    </script>
+</div>
+</html>

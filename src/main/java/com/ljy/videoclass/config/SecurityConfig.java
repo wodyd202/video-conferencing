@@ -1,10 +1,6 @@
 package com.ljy.videoclass.config;
 
-import org.apache.tomcat.util.descriptor.web.SecurityCollection;
-import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,15 +12,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import javax.naming.Context;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired private UserDetailsService userDetailsService;
+    @Autowired private OAuth2UserService oAuth2UserService;
 
     @Bean
     PasswordEncoder passwordEncoder(){
@@ -33,41 +28,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
+        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/assets/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.headers().frameOptions().disable();
+
         http.csrf().disable();
 
-        http.requiresChannel()
-                        .antMatchers("/login")
-                                .requiresSecure();
-
         http.authorizeRequests()
-                .antMatchers("/api/classroom").authenticated()
-                .antMatchers("/api/classroom/**").authenticated();
-//                .antMatchers("/main").authenticated()
-//                .antMatchers("/index").authenticated()
-//                .antMatchers("/room/**").authenticated();
+                .antMatchers("/**").authenticated();
 
-        http.formLogin()
-                .loginPage("/login")
+        http.oauth2Login()
+                .loginPage("/oauth2/authorization/google")
                 .defaultSuccessUrl("/main")
-                .permitAll();
+                        .userInfoEndpoint()
+                                .userService(oAuth2UserService);
 
         http.logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login")
+                .logoutSuccessUrl("/oauth2/authorization/google")
                 .invalidateHttpSession(true);
 
         http.exceptionHandling()
                 .accessDeniedPage("/denied");
     }
-
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
-
 }

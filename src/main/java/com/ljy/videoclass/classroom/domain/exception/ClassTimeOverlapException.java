@@ -1,4 +1,0 @@
-package com.ljy.videoclass.classroom.domain.exception;
-
-public class ClassTimeOverlapException extends IllegalArgumentException {
-}

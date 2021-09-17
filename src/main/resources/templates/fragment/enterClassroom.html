@@ -1,0 +1,64 @@
+<html lagn="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:fragment="enterClassroomFragment">
+    <div class="modal fade" id="confirmEnterModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <video id="selfView" autoplay="autoplay" style="width: 100%; height: 100%;"></video>
+                        </div>
+                        <div class="col-4 text-center">
+                            <button type="button" class="btn btn-outline-primary active" data-bs-toggle="button" autocomplete="off" aria-pressed="true" id="camActiveBtn">캠 활성화</button>
+                            <button type="button" class="btn btn-outline-success active" data-bs-toggle="button" autocomplete="off" aria-pressed="true" id="micActiveBtn">마이크 활성화</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="enterClassBtn">수업 입장</button>
+                    <button type="button" class="btn btn-danger" id="exitClassBtn">나가기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let localStream;
+        const confirmEnterModal = new bootstrap.Modal(document.getElementById("confirmEnterModal"), {});
+
+        const micActiveBtn = document.getElementById('micActiveBtn');
+        const camActiveBtn = document.getElementById('camActiveBtn');
+
+        const exitClassBtn = document.getElementById('exitClassBtn');
+        const enterClassBtn = document.getElementById('enterClassBtn');
+
+        exitClassBtn.addEventListener('click',()=>{
+            localStream.getTracks().forEach(track=>{
+                track.stop();
+            });
+            confirmEnterModal.hide();
+        });
+
+        micActiveBtn.addEventListener('click', ()=>{
+            localStream.getAudioTracks()[0].enabled = micActiveBtn.classList.contains('active');
+        });
+
+        camActiveBtn.addEventListener('click', ()=>{
+            localStream.getVideoTracks()[0].enabled = camActiveBtn.classList.contains('active');
+        });
+
+        function confirmClassroom(code){
+            navigator.mediaDevices.getUserMedia({video: true, audio: true})
+                .then(function (stream) {
+                    localStream = stream;
+                    selfView.srcObject = stream;
+                }).catch(function (error) {
+                console.log("Stream NOT OK: " + error.name + ': ' + error.message);
+            });
+            confirmEnterModal.show();
+        }
+    </script>
+</th:block>
+</html>

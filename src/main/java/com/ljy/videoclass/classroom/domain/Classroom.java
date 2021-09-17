@@ -25,6 +25,10 @@ public class Classroom {
     @Embedded
     private ClassDateInfo classDateInfo;
 
+    @Embedded
+    @AttributeOverride(name = "autoEnabled", column = @Column(name = "audoEnalbedState"))
+    private ClassOptionalDateInfo classOptionalDateInfo;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ClassroomState state;
@@ -51,10 +55,26 @@ public class Classroom {
         code = ClassroomCode.create();
         ChangeClassInfo classInfo = openClassroom.getClassInfo();
         ChangeClassDateInfo classDateInfo = openClassroom.getClassDateInfo();
+        ChangeClassOptionalDateInfo classOptionalDateInfo = openClassroom.getClassOptionalDateInfo();
+        if(existChangeClassOptionalDateInfo(classOptionalDateInfo)){
+            this.classOptionalDateInfo = mapFrom(classOptionalDateInfo);
+        }
         this.classInfo = new ClassInfo(classInfo);
         this.classDateInfo = new ClassDateInfo(classDateInfo);
         this.register = register;
         createDateTime = LocalDateTime.now();
+    }
+
+    private boolean existChangeClassOptionalDateInfo(ChangeClassOptionalDateInfo classOptionalDateInfo) {
+        return classOptionalDateInfo != null && (classOptionalDateInfo.getEndDate() != null || classOptionalDateInfo.getStartDate() != null);
+    }
+
+    private ClassOptionalDateInfo mapFrom(ChangeClassOptionalDateInfo classOptionalDateInfo){
+        return ClassOptionalDateInfo.builder()
+                .startDate(classOptionalDateInfo.getStartDate())
+                .endDate(classOptionalDateInfo.getEndDate())
+                .autoEnabled(classOptionalDateInfo.getAutoEnabled() != null ? classOptionalDateInfo.getAutoEnabled() : true)
+                .build();
     }
 
     public static Classroom createWith(OpenClassroom openClassroom, Register register){
@@ -116,11 +136,24 @@ public class Classroom {
         this.classDateInfo = new ClassDateInfo(changeClassDateInfo);
     }
 
+    /**
+     * @param classOptionalDateInfo
+     * - 수업 날짜 변경
+     */
+    public void changeClassOptionalDateInfo(ChangeClassOptionalDateInfo classOptionalDateInfo) {
+        if(existChangeClassOptionalDateInfo(classOptionalDateInfo)){
+            this.classOptionalDateInfo = mapFrom(classOptionalDateInfo);
+        }else{
+            this.classOptionalDateInfo = null;
+        }
+    }
+
     public ClassroomModel toModel() {
         return ClassroomModel.builder()
                 .code(code.get())
                 .classInfo(classInfo.toModel())
                 .classDateInfo(classDateInfo.toModel())
+                .classOptionalDateInfo(classOptionalDateInfo != null ? classOptionalDateInfo.toModel() : null)
                 .register(register.get())
                 .createDateTime(createDateTime)
                 .build();

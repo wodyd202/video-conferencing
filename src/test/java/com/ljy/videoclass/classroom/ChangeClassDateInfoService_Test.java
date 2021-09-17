@@ -8,6 +8,7 @@ import com.ljy.videoclass.classroom.domain.read.ClassDateInfoModel;
 import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
 import com.ljy.videoclass.classroom.domain.value.ClassroomCode;
 import com.ljy.videoclass.classroom.domain.value.Register;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

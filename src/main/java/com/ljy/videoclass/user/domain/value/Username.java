@@ -1,36 +1,19 @@
 package com.ljy.videoclass.user.domain.value;
 
 import com.ljy.videoclass.user.domain.exception.InvalidNameException;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.Embeddable;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
-@Embeddable
 public class Username {
     private final String name;
     protected Username(){name=null;}
 
     private Username(String name) {
-        verifyNotEmptyName(name);
-        validation(name);
+        if(name.isEmpty()){
+            throw new InvalidNameException("사용자 이름을 입력해주세요.");
+        }
         this.name = name;
-    }
-
-    public static final String EMPTY_NAME = "이름을 입력해주세요.";
-    private void verifyNotEmptyName(String name) {
-        if(!StringUtils.hasText(name)){
-            throw new InvalidNameException(EMPTY_NAME);
-        }
-    }
-
-    private static final Pattern PATTERN = Pattern.compile("^[가-힣]{1,10}$");
-    private static final String INVALID_NAME = "이름은 한글 1자 이상 10자 이하로 입력해주세요.";
-    private void validation(String name) {
-        if(!PATTERN.matcher(name).matches()){
-            throw new InvalidNameException(INVALID_NAME);
-        }
     }
 
     public static Username of(String name){

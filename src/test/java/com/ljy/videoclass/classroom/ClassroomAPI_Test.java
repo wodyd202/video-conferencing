@@ -5,6 +5,7 @@ import com.ljy.videoclass.classroom.command.application.DisableClassroomService;
 import com.ljy.videoclass.classroom.command.application.OpenClassroomService;
 import com.ljy.videoclass.classroom.domain.ChangeClassDateInfo;
 import com.ljy.videoclass.classroom.domain.ChangeClassInfo;
+import com.ljy.videoclass.classroom.domain.ChangeClassOptionalDateInfo;
 import com.ljy.videoclass.classroom.domain.OpenClassroom;
 import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
 import com.ljy.videoclass.classroom.domain.value.ClassroomCode;
@@ -20,9 +21,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 import static com.ljy.videoclass.classroom.ClassroomFixture.aOpenClassroom;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -48,7 +51,6 @@ public class ClassroomAPI_Test {
 
         assertRegister(openClassroom, status().isBadRequest());
     }
-
 
     @Test
     @DisplayName("수업 요일을 적어도 하나 이상 입력해야함")
@@ -158,6 +160,22 @@ public class ClassroomAPI_Test {
                                         .dayOfWeek(DayOfWeek.FRIDAY)
                                         .startHour(10)
                                         .endHour(15)
+                                .build())))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("수업 날짜 변경")
+    void changeClassOptionalDateInfo() throws Exception {
+        OpenClassroom openClassroom = aOpenClassroom().build();
+        ClassroomModel classroomModel = openClassroomService.open(openClassroom, Register.of("00000000"));
+
+        mockMvc.perform(put("/api/classroom/{classroomCode}/class-optional-date-info",classroomModel.getCode())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ChangeClassOptionalDateInfo.builder()
+                                        .startDate(LocalDate.of(2020,1,1))
+                                        .endDate(LocalDate.of(2020,12,25))
+                                        .autoEnabled(false)
                                 .build())))
                 .andExpect(status().isOk());
     }

@@ -1,49 +1,50 @@
 package com.ljy.videoclass.user.domain;
 
-import com.ljy.videoclass.user.domain.infra.PasswordConverter;
 import com.ljy.videoclass.user.domain.read.UserModel;
 import com.ljy.videoclass.user.domain.value.*;
 import lombok.Builder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
+@DynamicUpdate
 public class User {
 
     @EmbeddedId
     private final UserId id;
 
     @Embedded
-    private Username name;
-
-    @Convert(converter = PasswordConverter.class)
-    private Password password;
+    private UserInfo userInfo;
 
     protected User(){id = null;}
 
-    public void register(RegisterUserValidator registerUserValidator) {
-        registerUserValidator.validation(id);
-    }
-
-    public void encodePassword(PasswordEncoder passwordEncoder) {
-        password = password.encode(passwordEncoder);
-    }
-
     @Builder
-    public User(UserId id, Password password, Username username) {
+    public User(UserId id, UserInfo userInfo) {
         this.id = id;
-        this.password = password;
-        this.name = username;
+        this.userInfo = userInfo;
+    }
+
+    public static User oauthLogin(OauthLoginUser loginUser) {
+        return User.builder()
+                .id(UserId.of(loginUser.getIdentifier()))
+                .userInfo(UserInfo.builder()
+                        .image(loginUser.getImage() != null ? Image.path(loginUser.getImage()) : null)
+                        .username(Username.of(loginUser.getUsername()))
+                        .email(Email.of(loginUser.getEmail()))
+                        .build())
+                .build();
+    }
+
+    public void synchronize(User user) {
+        this.userInfo = user.userInfo;
     }
 
     public UserModel toModel(){
         return UserModel.builder()
-                .userId(id)
-                .username(name)
-                .password(password)
+                .userId(id.get())
+                .userInfo(userInfo.toModel())
                 .build();
     }
-
 }
