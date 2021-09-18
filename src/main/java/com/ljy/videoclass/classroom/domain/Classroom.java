@@ -12,11 +12,13 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "class_room",indexes = {
-        @Index(name = "register_index", columnList = "code, color, title, dayOfWeek, startHour, endHour, register, state, createDateTime")
+        @Index(columnList = "register, dayOfWeek, startDate, endDate, startHour, endHour,code, title"),
+        @Index(columnList = "register, state")
 })
 @DynamicUpdate
 public class Classroom {
     @EmbeddedId
+    @AttributeOverride(name = "code", column = @Column(name = "code", length = 50))
     private final ClassroomCode code;
 
     @Embedded
@@ -26,15 +28,15 @@ public class Classroom {
     private ClassDateInfo classDateInfo;
 
     @Embedded
-    @AttributeOverride(name = "autoEnabled", column = @Column(name = "audoEnalbedState"))
+    @AttributeOverride(name = "autoEnabled", column = @Column(name = "autoEnabledState"))
     private ClassOptionalDateInfo classOptionalDateInfo;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10)
     private ClassroomState state;
 
     @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "register", nullable = false))
+    @AttributeOverride(name = "id", column = @Column(name = "register", nullable = false, length = 30))
     private final Register register;
     private final LocalDateTime createDateTime;
 

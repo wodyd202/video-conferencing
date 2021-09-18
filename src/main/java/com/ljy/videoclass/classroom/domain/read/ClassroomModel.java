@@ -20,7 +20,7 @@ public class ClassroomModel {
     public ClassroomModel(String code,
                           Color color,
                           String title,
-                          String description,
+//                          String description,
                           DayOfWeek dayOfWeek,
                           int startHour,
                           int endHour,
@@ -30,7 +30,7 @@ public class ClassroomModel {
         this.classInfo = ClassInfoModel.builder()
                 .title(title)
                 .color(color)
-                .description(description)
+//                .description(description)
                 .build();
         this.classDateInfo = ClassDateInfoModel.builder()
                 .dayOfWeek(dayOfWeek)

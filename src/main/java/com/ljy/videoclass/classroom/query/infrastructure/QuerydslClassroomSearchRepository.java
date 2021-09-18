@@ -10,6 +10,7 @@ import com.ljy.videoclass.core.http.PageRequest;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -56,21 +57,21 @@ public class QuerydslClassroomSearchRepository implements ClassroomSearchReposit
         List<ClassroomModel> classroomModel = jpaQueryFactory.select(classroomModel(register))
                 .from(classroom)
                 .where(eqRegister(register).and(
-                        ltStartHour(classroomSearchModel.getEndHour()).and(
-                            gteEndHour(classroomSearchModel.getEndHour()))
-                            .or(
-                                    lteStartHour(classroomSearchModel.getStartHour()).and(
-                                    gtEndHour(classroomSearchModel.getStartHour()))
+                                        ltStartHour(classroomSearchModel.getEndHour()).and(
+                                                        gteEndHour(classroomSearchModel.getEndHour()))
+                                                .or(
+                                                        lteStartHour(classroomSearchModel.getStartHour()).and(
+                                                                gtEndHour(classroomSearchModel.getStartHour()))
+                                                )
                                 )
-                        )
-                        .and(eqDayOfWeek(classroomSearchModel.getDayOfWeek()).and(
-                                gteEndDate(classroomSearchModel.getEndDate()).and(
-                                ltStartDate(classroomSearchModel.getEndDate())).or(
-                                    gtEndDate(classroomSearchModel.getStartDate()).and(
-                                    lteStartDate(classroomSearchModel.getStartDate()))
+                                .and(eqDayOfWeek(classroomSearchModel.getDayOfWeek()).and(
+                                                gteEndDate(classroomSearchModel.getEndDate()).and(
+                                                        ltStartDate(classroomSearchModel.getEndDate())).or(
+                                                        gtEndDate(classroomSearchModel.getStartDate()).and(
+                                                                lteStartDate(classroomSearchModel.getStartDate()))
+                                                )
+                                        )
                                 )
-                            )
-                        )
                 )
                 .limit(pageRequest.getSize())
                 .offset(pageRequest.getPage() * pageRequest.getSize()).fetch();
@@ -145,7 +146,7 @@ public class QuerydslClassroomSearchRepository implements ClassroomSearchReposit
                 classroom.code().code,
                 classroom.classInfo().color,
                 classroom.classInfo().title().title,
-                classroom.classInfo().description().description,
+//                classroom.classInfo().description().description,
                 classroom.classDateInfo().dayOfWeek,
                 classroom.classDateInfo().startHour,
                 classroom.classDateInfo().endHour,

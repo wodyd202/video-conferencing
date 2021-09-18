@@ -1,7 +1,7 @@
 spring:
   h2:
     console:
-      enabled: true
+      enabled: false
       settings:
         trace: true
       path: /h2-console
@@ -13,7 +13,13 @@ spring:
       hibernate:
         format_sql: true
     generate-ddl: true
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+#    database-platform: org.hibernate.dialect.H2Dialect
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:test
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/classroom?serverTimezone=UTC&characterEncoding=UTF-8
+    password: root
+    username: root

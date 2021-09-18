@@ -3,18 +3,20 @@ package com.ljy.videoclass.classroom.domain.value;
 import com.ljy.videoclass.classroom.domain.ChangeClassInfo;
 import com.ljy.videoclass.classroom.domain.read.ClassInfoModel;
 
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Embeddable
 public class ClassInfo {
+
+    @AttributeOverride(name = "title", column = @Column(name = "title", length = 40, nullable = false))
     private final Title title;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
     private final Color color;
 
+    @AttributeOverride(name = "description", column = @Column(name = "description", length = 50))
     private Description description;
 
     protected ClassInfo(){title = null; color = null;}
