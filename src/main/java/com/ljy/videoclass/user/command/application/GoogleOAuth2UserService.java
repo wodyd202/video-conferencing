@@ -38,12 +38,13 @@ public class GoogleOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private User saveOrUpdate(OAuthAttributes attributes){
-        Optional<User> findUser = userRepository.findById(UserId.of(attributes.getEmail()));
+        String sub = attributes.getAttributes().get("sub").toString();
+        Optional<User> findUser = userRepository.findById(UserId.of(sub));
         OauthLoginUser oauthLoginUser = OauthLoginUser.builder()
                 .username(attributes.getName())
                 .email(attributes.getEmail())
                 .image(attributes.getPicture())
-                .identifier(attributes.getNameAttributeKey())
+                .identifier(sub)
                 .build();
         User user = User.oauthLogin(oauthLoginUser);
         if(!findUser.isPresent()){

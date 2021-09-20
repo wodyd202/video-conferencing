@@ -1,31 +1,23 @@
 package com.ljy.videoclass.classroom;
 
-import com.ljy.videoclass.classroom.command.application.ClassroomRepository;
-import com.ljy.videoclass.classroom.command.application.SimpleOpenClassroomValidator;
 import com.ljy.videoclass.classroom.domain.ChangeClassDateInfo;
 import com.ljy.videoclass.classroom.domain.OpenClassroom;
 import com.ljy.videoclass.classroom.domain.*;
 import com.ljy.videoclass.classroom.domain.exception.*;
-import com.ljy.videoclass.classroom.domain.read.ClassDateInfoModel;
-import com.ljy.videoclass.classroom.domain.read.ClassInfoModel;
-import com.ljy.videoclass.classroom.domain.read.ClassOptionalDateInfoModel;
-import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
+import com.ljy.videoclass.classroom.domain.read.*;
 import com.ljy.videoclass.classroom.domain.value.*;
-import org.junit.jupiter.api.Disabled;
+import com.ljy.videoclass.user.domain.value.UserId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.Arrays;
 
 import static com.ljy.videoclass.classroom.ClassroomFixture.aOpenClassroom;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class Classroom_Test {
 

@@ -1,13 +1,18 @@
 package com.ljy.videoclass.classroom.domain;
 
+import com.ljy.videoclass.elrolment.command.ElrolmentRepository;
 import com.ljy.videoclass.classroom.domain.exception.AlreadyActiveClassException;
 import com.ljy.videoclass.classroom.domain.exception.AlreadyDisabledClassException;
 import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
+import com.ljy.videoclass.classroom.domain.read.ErolmentUserModel;
 import com.ljy.videoclass.classroom.domain.value.*;
+import com.ljy.videoclass.elrolment.domain.exception.InvalidElrolmentException;
+import com.ljy.videoclass.user.domain.value.UserId;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -150,6 +155,25 @@ public class Classroom {
         }
     }
 
+    /**
+     * @param requester
+     * - 수강 신청
+     */
+    public void elrolment(ElrolmentValidator elrolmentValidator, Register requester) {
+        if(register.equals(requester)){
+           throw new InvalidElrolmentException("자신의 수업에 수강신청을 진행할 수 없습니다.");
+        }
+        elrolmentValidator.validation(code, requester);
+    }
+
+    public boolean isDisable() {
+        return state.equals(ClassroomState.Disable);
+    }
+
+    public List<ErolmentUserModel> getElrolmentUsers(ElrolmentRepository elrolmentRepository) {
+        return elrolmentRepository.findByClassroomCode(code);
+    }
+
     public ClassroomModel toModel() {
         return ClassroomModel.builder()
                 .code(code.get())
@@ -172,10 +196,6 @@ public class Classroom {
     @Override
     public int hashCode() {
         return Objects.hash(code, classInfo, classDateInfo, register, createDateTime);
-    }
-
-    public boolean isDisable() {
-        return state.equals(ClassroomState.Disable);
     }
 
 }
