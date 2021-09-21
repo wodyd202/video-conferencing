@@ -1,5 +1,6 @@
 package com.ljy.videoclass.classroom.domain;
 
+import com.ljy.videoclass.classroom.command.application.event.ElrolmentedEvent;
 import com.ljy.videoclass.elrolment.command.ElrolmentRepository;
 import com.ljy.videoclass.classroom.domain.exception.AlreadyActiveClassException;
 import com.ljy.videoclass.classroom.domain.exception.AlreadyDisabledClassException;
@@ -9,6 +10,7 @@ import com.ljy.videoclass.classroom.domain.value.*;
 import com.ljy.videoclass.elrolment.domain.exception.InvalidElrolmentException;
 import com.ljy.videoclass.user.domain.value.UserId;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -62,12 +64,12 @@ public class Classroom {
         code = ClassroomCode.create();
         ChangeClassInfo classInfo = openClassroom.getClassInfo();
         ChangeClassDateInfo classDateInfo = openClassroom.getClassDateInfo();
-        ChangeClassOptionalDateInfo classOptionalDateInfo = openClassroom.getClassOptionalDateInfo();
+        ChangeClassOptionalDateInfo classOptionalDateInfo = openClassroom.getClassOptionalDateInfo();        this.classDateInfo = new ClassDateInfo(classDateInfo);
+
         if(existChangeClassOptionalDateInfo(classOptionalDateInfo)){
             this.classOptionalDateInfo = mapFrom(classOptionalDateInfo);
         }
         this.classInfo = new ClassInfo(classInfo);
-        this.classDateInfo = new ClassDateInfo(classDateInfo);
         this.register = register;
         createDateTime = LocalDateTime.now();
     }
@@ -159,8 +161,11 @@ public class Classroom {
      * @param requester
      * - 수강 신청
      */
-    public void elrolment(ElrolmentValidator elrolmentValidator, Register requester) {
-        if(register.equals(requester)){
+    public void elrolment(ElrolmentValidator elrolmentValidator, Requester requester) {
+        if(isDisable()){
+            throw new AlreadyDisabledClassException("비활성화되어있는 수업에 수강신청할 수 없습니다.");
+        }
+        if(register.equals(Register.of(requester.get()))){
            throw new InvalidElrolmentException("자신의 수업에 수강신청을 진행할 수 없습니다.");
         }
         elrolmentValidator.validation(code, requester);
@@ -168,10 +173,6 @@ public class Classroom {
 
     public boolean isDisable() {
         return state.equals(ClassroomState.Disable);
-    }
-
-    public List<ErolmentUserModel> getElrolmentUsers(ElrolmentRepository elrolmentRepository) {
-        return elrolmentRepository.findByClassroomCode(code);
     }
 
     public ClassroomModel toModel() {

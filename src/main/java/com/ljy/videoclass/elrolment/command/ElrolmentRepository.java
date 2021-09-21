@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface ElrolmentRepository {
     void save(ElrolmentUser elrolmentUser);
-    List<ErolmentUserModel> findByClassroomCode(ClassroomCode code);
 }

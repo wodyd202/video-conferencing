@@ -45,6 +45,14 @@ public class QuerydslClassroomRepository implements ClassroomRepository {
     }
 
     @Override
+    public Optional<Classroom> findByCode(ClassroomCode classroomCode) {
+        Classroom classroom = jpaQueryFactory.select(QClassroom.classroom)
+                .from(QClassroom.classroom)
+                .where(QClassroom.classroom.code().eq(classroomCode)).fetchFirst();
+        return Optional.ofNullable(classroom);
+    }
+
+    @Override
     public void save(Classroom classroom) {
         if(entityManager.contains(classroom)){
             entityManager.merge(classroom);

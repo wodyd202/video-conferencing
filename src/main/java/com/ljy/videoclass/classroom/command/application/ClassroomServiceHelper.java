@@ -10,4 +10,8 @@ public class ClassroomServiceHelper {
     public static Classroom findByCodeAndRegister(ClassroomRepository classroomRepository, ClassroomCode classroomCode, Register register) {
         return classroomRepository.findByCodeAndRegister(classroomCode,register).orElseThrow(ClassroomNotFoundException::new);
     }
+
+    public static Classroom findByCode(ClassroomRepository classroomRepository, ClassroomCode classroomCode) {
+        return classroomRepository.findByCode(classroomCode).orElseThrow(ClassroomNotFoundException::new);
+    }
 }

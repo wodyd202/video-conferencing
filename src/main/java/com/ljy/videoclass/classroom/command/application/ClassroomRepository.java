@@ -13,4 +13,6 @@ public interface ClassroomRepository {
     List<Classroom> findClassDateInfoByRegister(Register register);
 
     Optional<Classroom> findByCodeAndRegister(ClassroomCode classroomCode, Register register);
+
+    Optional<Classroom> findByCode(ClassroomCode classroomCode);
 }

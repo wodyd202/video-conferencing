@@ -1,17 +1,17 @@
 package com.ljy.videoclass.classroom.domain.read;
 
-import com.ljy.videoclass.elrolment.domain.value.ErolmentState;
+import com.ljy.videoclass.elrolment.domain.value.ElrolmentState;
 import lombok.Builder;
 
 import java.time.LocalDate;
 
 public class ErolmentUserModel {
     private String userId;
-    private ErolmentState state;
+    private ElrolmentState state;
     private LocalDate erolmentDate;
 
     @Builder
-    private ErolmentUserModel(String userId, ErolmentState state, LocalDate erolmentDate) {
+    private ErolmentUserModel(String userId, ElrolmentState state, LocalDate erolmentDate) {
         this.userId = userId;
         this.state = state;
         this.erolmentDate = erolmentDate;
@@ -21,7 +21,7 @@ public class ErolmentUserModel {
         return userId;
     }
 
-    public ErolmentState getState() {
+    public ElrolmentState getState() {
         return state;
     }
 
