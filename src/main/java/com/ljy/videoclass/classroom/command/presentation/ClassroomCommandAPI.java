@@ -12,6 +12,7 @@ import com.ljy.videoclass.classroom.domain.value.ClassroomCode;
 import com.ljy.videoclass.classroom.domain.value.Register;
 import com.ljy.videoclass.classroom.domain.value.Requester;
 import com.ljy.videoclass.core.http.APIResponse;
+import com.ljy.videoclass.elrolment.domain.exception.InvalidElrolmentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -101,13 +102,15 @@ public class ClassroomCommandAPI {
     }
 
     @ExceptionHandler({
+            InvalidElrolmentException.class,
             InvalidClassDateInfoException.class,
             InvalidClassTitleException.class,
             InvalidClassOptionalDateInfoException.class,
             InvalidDescriptionException.class,
             ClassroomNotFoundException.class,
             AlreadyDisabledClassException.class,
-            AlreadyActiveClassException.class
+            AlreadyActiveClassException.class,
+            AlreadyElrolmentException.class
     })
     public ResponseEntity<String> error(IllegalArgumentException e){
         return ResponseEntity.badRequest().body(e.getMessage());
