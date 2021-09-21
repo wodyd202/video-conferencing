@@ -10,6 +10,7 @@ import com.ljy.videoclass.classroom.domain.exception.*;
 import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
 import com.ljy.videoclass.classroom.domain.value.ClassroomCode;
 import com.ljy.videoclass.classroom.domain.value.Register;
+import com.ljy.videoclass.classroom.domain.value.Requester;
 import com.ljy.videoclass.core.http.APIResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ public class ClassroomCommandAPI {
     @Autowired private ChangeClassroomInfoService changeClassroomInfoService;
     @Autowired private ChangeClassDateInfoService changeClassDateInfoService;
     @Autowired private ChangeClassOptionalDateInfoService changeClassOptionalDateInfoService;
+    @Autowired private ElrolmentService elrolmentService;
 
     @PostMapping
     public APIResponse open(@Valid @RequestBody OpenClassroom openClassroom, Errors errors, Principal principal){
@@ -89,6 +91,13 @@ public class ClassroomCommandAPI {
         classroomModel = changeClassDateInfoService.changeClassDateInfo(changeClassAll.getChangeClassDateInfo(), classroomCode, Register.of(principal.getName()));
         classroomModel = changeClassroomInfoService.changeClassInfo(changeClassAll.getChangeClassInfo(), classroomCode, Register.of(principal.getName()));
         return new APIResponse(classroomModel, HttpStatus.OK);
+    }
+
+    @PostMapping("{classroomCode}/elrolment")
+    public APIResponse elrolment(@PathVariable ClassroomCode classroomCode,
+                                 Principal principal){
+        elrolmentService.elrolment(classroomCode, Requester.of(principal.getName()));
+        return new APIResponse(null, HttpStatus.OK);
     }
 
     @ExceptionHandler({

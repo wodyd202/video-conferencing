@@ -180,4 +180,14 @@ public class ClassroomAPI_Test {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @DisplayName("수강 신청")
+    void elrolment() throws Exception {
+        OpenClassroom openClassroom = aOpenClassroom().build();
+        ClassroomModel classroomModel = openClassroomService.open(openClassroom, Register.of("elrolment"));
+
+        mockMvc.perform(post("/api/classroom/{classroomCode}/elrolment",classroomModel.getCode()))
+                .andExpect(status().isOk());
+    }
+
 }
