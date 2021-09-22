@@ -18,4 +18,8 @@ public interface ClassroomSearchRepository {
     long countByClassDateAndDayOfWeek(ClassroomSearchModel classroomSearchModel, String register);
 
     Optional<ClassroomModel> findbyCodeAndRegister(String classroomCode, String register);
+
+    List<ClassroomModel> findLastClassroomByRegister(PageRequest pageRequest, String register);
+
+    long countLastClassroomByRegister(String register);
 }

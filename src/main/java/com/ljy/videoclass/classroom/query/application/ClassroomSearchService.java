@@ -30,6 +30,13 @@ public class ClassroomSearchService {
                 .build();
     }
 
+    public ClassroomModels findLastClassroomByRegister(String register, PageRequest pageRequest) {
+        return ClassroomModels.builder()
+                .classrooms(classroomRepository.findLastClassroomByRegister(pageRequest,register))
+                .totalElement(classroomRepository.countLastClassroomByRegister(register))
+                .build();
+    }
+
     public ClassroomModel findByCodeAndRegister(String classroomCode, String register) {
         return classroomRepository.findbyCodeAndRegister(classroomCode, register).orElseThrow(ClassroomNotFoundException::new);
     }

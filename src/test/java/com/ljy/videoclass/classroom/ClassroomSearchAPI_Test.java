@@ -81,8 +81,15 @@ public class ClassroomSearchAPI_Test {
                         .param("state","Activate")
                         .param("page","0")
                         .param("size", "10"))
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void findLastClassroomByRegister() throws Exception {
+        mockMvc.perform(get("/api/classroom/last")
+                        .param("page","0")
+                        .param("size","10"))
+                .andExpect(status().isOk());
     }
 
 }

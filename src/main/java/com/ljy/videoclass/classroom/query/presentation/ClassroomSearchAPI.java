@@ -50,6 +50,15 @@ public class ClassroomSearchAPI {
         return new APIResponse(classroomModels, HttpStatus.OK);
     }
 
+    @GetMapping("last")
+    public APIResponse findLastClassroomByRegister(@Valid PageRequest pageRequest,
+                                                   Errors errors,
+                                                   Principal principal){
+        verifyNotContainsError(errors);
+        ClassroomModels classroomModels = classroomService.findLastClassroomByRegister(principal.getName(), pageRequest);
+        return new APIResponse(classroomModels, HttpStatus.OK);
+    }
+
     @ExceptionHandler({
             ClassroomNotFoundException.class
     })

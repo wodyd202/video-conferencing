@@ -35,6 +35,22 @@ public class QuerydslClassroomSearchRepository implements ClassroomSearchReposit
     }
 
     @Override
+    public List<ClassroomModel> findLastClassroomByRegister(PageRequest pageRequest, String register) {
+        return jpaQueryFactory.select(classroomModel(register))
+                .from(classroom)
+                .where(eqRegister(register).and(classroom.classOptionalDateInfo().endDate.lt(LocalDate.now())))
+                .limit(pageRequest.getSize())
+                .offset(pageRequest.getPage() * pageRequest.getSize()).fetch();
+    }
+
+    @Override
+    public long countLastClassroomByRegister(String register) {
+        return jpaQueryFactory.selectOne()
+                .from(classroom)
+                .where(eqRegister(register).and(classroom.classOptionalDateInfo().endDate.lt(LocalDate.now()))).fetchCount();
+    }
+
+    @Override
     public List<ClassroomModel> findByRegister(ClassroomState state, String register, PageRequest pageRequest) {
         return jpaQueryFactory.select(classroomModel(register))
                 .from(classroom)
