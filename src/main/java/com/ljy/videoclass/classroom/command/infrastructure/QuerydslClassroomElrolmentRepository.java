@@ -1,7 +1,7 @@
 package com.ljy.videoclass.classroom.command.infrastructure;
 
 import com.ljy.videoclass.classroom.command.application.ElrolmentRepository;
-import com.ljy.videoclass.classroom.command.application.model.ElrolmentModel;
+import com.ljy.videoclass.classroom.domain.read.ElrolmentModel;
 import com.ljy.videoclass.elrolment.domain.QElrolmentUser;
 import com.ljy.videoclass.elrolment.domain.value.ClassroomCode;
 import com.ljy.videoclass.elrolment.domain.value.Requester;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class QuerydslElrolmentRepository implements ElrolmentRepository {
+public class QuerydslClassroomElrolmentRepository implements ElrolmentRepository {
     @Autowired private JPAQueryFactory jpaQueryFactory;
     @Override
     public Optional<ElrolmentModel> findByClassroomCodeAndRequester(String classroomCode, String requester) {

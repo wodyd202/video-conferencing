@@ -34,6 +34,7 @@ public class ClassroomCommandAPI {
     @Autowired private ChangeClassDateInfoService changeClassDateInfoService;
     @Autowired private ChangeClassOptionalDateInfoService changeClassOptionalDateInfoService;
     @Autowired private ElrolmentService elrolmentService;
+    @Autowired private AllowElrolmentService allowElrolmentService;
 
     @PostMapping
     public APIResponse open(@Valid @RequestBody OpenClassroom openClassroom, Errors errors, Principal principal){
@@ -98,6 +99,14 @@ public class ClassroomCommandAPI {
     public APIResponse elrolment(@PathVariable ClassroomCode classroomCode,
                                  Principal principal){
         elrolmentService.elrolment(classroomCode, Requester.of(principal.getName()));
+        return new APIResponse(null, HttpStatus.OK);
+    }
+
+    @PutMapping("{classroomCode}/elrolment/{requester}")
+    public APIResponse allowElrolment(@PathVariable ClassroomCode classroomCode,
+                                      @PathVariable Requester requester,
+                                      Principal principal){
+        allowElrolmentService.allowElrolment(classroomCode, requester, Register.of(principal.getName()));
         return new APIResponse(null, HttpStatus.OK);
     }
 

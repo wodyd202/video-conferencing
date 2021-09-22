@@ -8,6 +8,9 @@ import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 수업 개설 서비스
+ */
 @Service
 @Transactional
 public class OpenClassroomService {

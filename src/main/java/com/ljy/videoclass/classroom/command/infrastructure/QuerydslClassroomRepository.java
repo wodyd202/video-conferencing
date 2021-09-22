@@ -27,16 +27,6 @@ public class QuerydslClassroomRepository implements ClassroomRepository {
     @Autowired private JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Classroom> findClassDateInfoByRegister(Register register) {
-        return jpaQueryFactory.select(Projections.constructor(Classroom.class,
-                        classroom.classDateInfo(),
-                        asSimple(register)))
-                .from(classroom)
-                .where(classroom.register().eq(register))
-                .fetch();
-    }
-
-    @Override
     public Optional<Classroom> findByCodeAndRegister(ClassroomCode classroomCode, Register register) {
         Classroom classroom = jpaQueryFactory.select(QClassroom.classroom)
                 .from(QClassroom.classroom)

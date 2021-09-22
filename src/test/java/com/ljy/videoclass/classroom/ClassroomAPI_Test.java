@@ -2,6 +2,7 @@ package com.ljy.videoclass.classroom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ljy.videoclass.classroom.command.application.DisableClassroomService;
+import com.ljy.videoclass.classroom.command.application.ElrolmentService;
 import com.ljy.videoclass.classroom.command.application.OpenClassroomService;
 import com.ljy.videoclass.classroom.domain.ChangeClassDateInfo;
 import com.ljy.videoclass.classroom.domain.ChangeClassInfo;
@@ -10,6 +11,7 @@ import com.ljy.videoclass.classroom.domain.OpenClassroom;
 import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
 import com.ljy.videoclass.classroom.domain.value.ClassroomCode;
 import com.ljy.videoclass.classroom.domain.value.Register;
+import com.ljy.videoclass.classroom.domain.value.Requester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,6 +189,21 @@ public class ClassroomAPI_Test {
         ClassroomModel classroomModel = openClassroomService.open(openClassroom, Register.of("elrolment"));
 
         mockMvc.perform(post("/api/classroom/{classroomCode}/elrolment",classroomModel.getCode()))
+                .andExpect(status().isOk());
+    }
+
+    @Autowired
+    ElrolmentService elrolmentService;
+
+    @Test
+    @DisplayName("수강신청 수락")
+    void allow_elrolment() throws Exception {
+        OpenClassroom openClassroom = aOpenClassroom().build();
+        ClassroomModel classroomModel = openClassroomService.open(openClassroom, Register.of("00000000"));
+
+        elrolmentService.elrolment(ClassroomCode.of(classroomModel.getCode()), Requester.of("elrolment"));
+
+        mockMvc.perform(put("/api/classroom/{classroomCode}/elrolment/{userId}", classroomModel.getCode(), "elrolment"))
                 .andExpect(status().isOk());
     }
 

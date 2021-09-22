@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.ljy.videoclass.classroom.command.application.ClassroomServiceHelper.findByCode;
 
+/**
+ * 수강신청 서비스
+ */
 @Service
 @Transactional
 public class ElrolmentService {

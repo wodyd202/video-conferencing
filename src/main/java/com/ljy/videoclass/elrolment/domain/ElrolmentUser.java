@@ -47,6 +47,10 @@ public class ElrolmentUser {
         return new ElrolmentUser(classroomCode, requester);
     }
 
+    public void allow() {
+        this.state = ElrolmentState.ALLOWED;
+    }
+
     public ElrolmentUserModel toModel(){
         return ElrolmentUserModel.builder()
                 .classroomCode(code)
@@ -55,4 +59,5 @@ public class ElrolmentUser {
                 .elrolmentDate(elrolmentDate)
                 .build();
     }
+
 }

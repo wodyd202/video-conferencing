@@ -1,5 +1,7 @@
 package com.ljy.videoclass.classroom.domain.value;
 
+import java.util.Objects;
+
 public class Requester {
     private final String userId;
 
@@ -13,5 +15,18 @@ public class Requester {
 
     public String get() {
         return userId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Requester requester = (Requester) o;
+        return Objects.equals(userId, requester.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId);
     }
 }

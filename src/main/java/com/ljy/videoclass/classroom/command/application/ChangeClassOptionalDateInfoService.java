@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.ljy.videoclass.classroom.command.application.ClassroomServiceHelper.findByCodeAndRegister;
 
+/**
+ * 수업 날짜 옵션 정보 변경 서비스
+ */
 @Service
 @Transactional
 public class ChangeClassOptionalDateInfoService {

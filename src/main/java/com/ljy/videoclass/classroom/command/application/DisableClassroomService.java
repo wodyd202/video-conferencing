@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.ljy.videoclass.classroom.command.application.ClassroomServiceHelper.findByCodeAndRegister;
 
+/**
+ * 수업 비활성화 서비스
+ */
 @Service
 @Transactional
 public class DisableClassroomService {

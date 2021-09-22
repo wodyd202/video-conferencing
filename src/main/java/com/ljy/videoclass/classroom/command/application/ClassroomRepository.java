@@ -10,8 +10,6 @@ import java.util.Optional;
 public interface ClassroomRepository {
     void save(Classroom classroom);
 
-    List<Classroom> findClassDateInfoByRegister(Register register);
-
     Optional<Classroom> findByCodeAndRegister(ClassroomCode classroomCode, Register register);
 
     Optional<Classroom> findByCode(ClassroomCode classroomCode);

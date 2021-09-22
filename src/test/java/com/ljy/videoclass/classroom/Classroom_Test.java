@@ -176,8 +176,10 @@ public class Classroom_Test {
     void disable() {
         OpenClassroom openClassroom = aOpenClassroom().build();
         Classroom classroom = openClassroom(openClassroom);
-        classroom.disable();
-        assertTrue(classroom.isDisable());
+
+        assertDoesNotThrow(()->{
+            classroom.disable();
+        });
     }
 
     @Test
@@ -198,8 +200,9 @@ public class Classroom_Test {
         Classroom classroom = openClassroom(openClassroom);
         classroom.disable();
 
-        classroom.active();
-        assertFalse(classroom.isDisable());
+        assertDoesNotThrow(()->{
+            classroom.active();
+        });
     }
 
     @Test

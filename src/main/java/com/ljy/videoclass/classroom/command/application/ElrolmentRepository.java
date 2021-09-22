@@ -1,6 +1,6 @@
 package com.ljy.videoclass.classroom.command.application;
 
-import com.ljy.videoclass.classroom.command.application.model.ElrolmentModel;
+import com.ljy.videoclass.classroom.domain.read.ElrolmentModel;
 
 import java.util.Optional;
 

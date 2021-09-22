@@ -1,15 +1,13 @@
 package com.ljy.videoclass.elrolment.query.presentation;
 
-import com.ljy.videoclass.classroom.command.application.model.ElrolmentModel;
+import com.ljy.videoclass.classroom.domain.read.ElrolmentModel;
 import com.ljy.videoclass.core.http.APIResponse;
 import com.ljy.videoclass.elrolment.domain.value.ClassroomCode;
+import com.ljy.videoclass.elrolment.domain.value.ElrolmentState;
 import com.ljy.videoclass.elrolment.query.application.ElrolmentSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -20,8 +18,10 @@ public class ElrolmentSearchAPI {
     @Autowired private ElrolmentSearchService elrolmentSearchService;
 
     @GetMapping
-    public APIResponse findByCodeAndRegister(@PathVariable ClassroomCode classroomCode, Principal principal){
-        List<ElrolmentModel> elrolments = elrolmentSearchService.findByCodeAndRegister(classroomCode, principal.getName());
+    public APIResponse findByCodeAndRegister(@PathVariable ClassroomCode classroomCode,
+                                             ElrolmentState state,
+                                             Principal principal){
+        List<ElrolmentModel> elrolments = elrolmentSearchService.findByCodeAndRegisterAndState(classroomCode, principal.getName(), state);
         return new APIResponse(elrolments, HttpStatus.OK);
     }
 }

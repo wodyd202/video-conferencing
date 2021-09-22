@@ -1,20 +1,13 @@
 package com.ljy.videoclass.classroom.domain;
 
-import com.ljy.videoclass.classroom.command.application.event.ElrolmentedEvent;
-import com.ljy.videoclass.elrolment.command.ElrolmentRepository;
 import com.ljy.videoclass.classroom.domain.exception.AlreadyActiveClassException;
 import com.ljy.videoclass.classroom.domain.exception.AlreadyDisabledClassException;
 import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
-import com.ljy.videoclass.classroom.domain.read.ErolmentUserModel;
 import com.ljy.videoclass.classroom.domain.value.*;
-import com.ljy.videoclass.elrolment.domain.exception.InvalidElrolmentException;
-import com.ljy.videoclass.user.domain.value.UserId;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -163,17 +156,11 @@ public class Classroom {
      * - 수강 신청
      */
     public void elrolment(ElrolmentValidator elrolmentValidator, Requester requester) {
-        if(isDisable()){
-            throw new AlreadyDisabledClassException("비활성화되어있는 수업에 수강신청할 수 없습니다.");
-        }
-        if(register.equals(Register.of(requester.get()))){
-           throw new InvalidElrolmentException("자신의 수업에 수강신청을 진행할 수 없습니다.");
-        }
-        elrolmentValidator.validation(code, requester);
+        elrolmentValidator.validation(code, register, requester, state);
     }
 
-    public boolean isDisable() {
-        return state.equals(ClassroomState.Disable);
+    public void allowedElrolment(AllowElrolmentValidator allowedElrolmentValidator, Requester requester) {
+        allowedElrolmentValidator.validation(code, requester, state);
     }
 
     public ClassroomModel toModel() {
@@ -199,5 +186,4 @@ public class Classroom {
     public int hashCode() {
         return Objects.hash(code, classInfo, classDateInfo, register, createDateTime);
     }
-
 }

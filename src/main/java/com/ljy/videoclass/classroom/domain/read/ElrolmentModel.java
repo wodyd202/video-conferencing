@@ -1,4 +1,4 @@
-package com.ljy.videoclass.classroom.command.application.model;
+package com.ljy.videoclass.classroom.domain.read;
 
 import com.ljy.videoclass.elrolment.domain.value.ClassroomCode;
 import com.ljy.videoclass.elrolment.domain.value.ElrolmentState;

@@ -30,7 +30,8 @@ public class ElrolmentAPI_Test {
         OpenClassroom openClassroom = aOpenClassroom().build();
         ClassroomModel classroomModel = openClassroomService.open(openClassroom, Register.of("00000000"));
 
-        mockMvc.perform(get("/api/elrolment/{classroomCode}", classroomModel.getCode()))
+        mockMvc.perform(get("/api/elrolment/{classroomCode}", classroomModel.getCode())
+                        .param("state","NOT"))
                 .andExpect(status().isOk());
     }
 }

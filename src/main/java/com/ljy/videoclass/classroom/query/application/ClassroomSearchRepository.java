@@ -2,7 +2,7 @@ package com.ljy.videoclass.classroom.query.application;
 
 import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
 import com.ljy.videoclass.classroom.domain.value.ClassroomState;
-import com.ljy.videoclass.classroom.query.model.ClassroomSearchModel;
+import com.ljy.videoclass.classroom.query.application.model.ClassroomSearchModel;
 import com.ljy.videoclass.core.http.PageRequest;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.ljy.videoclass.classroom.query.model;
+package com.ljy.videoclass.classroom.query.application.model;
 
 import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
 import lombok.Builder;

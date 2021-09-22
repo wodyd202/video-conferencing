@@ -1,5 +1,6 @@
-package com.ljy.videoclass.classroom.command.application;
+package com.ljy.videoclass.classroom.command.application.util;
 
+import com.ljy.videoclass.classroom.command.application.ClassroomRepository;
 import com.ljy.videoclass.classroom.domain.value.ClassDateInfo;
 import com.ljy.videoclass.classroom.domain.OpenClassroomValidator;
 import com.ljy.videoclass.classroom.domain.value.Register;
