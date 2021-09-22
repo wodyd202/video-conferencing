@@ -32,7 +32,8 @@ public class ElrolmentUser {
     @Column(nullable = false)
     private LocalDate elrolmentDate;
 
-    protected ElrolmentUser(){code = null; userId = null;}
+    protected ElrolmentUser(){
+        code = null; userId = null;}
 
     private ElrolmentUser(ClassroomCode code, Requester userId) {
         identifier = UUID.randomUUID().toString();

@@ -158,6 +158,7 @@ public class Classroom {
     }
 
     /**
+     * @param elrolmentValidator
      * @param requester
      * - 수강 신청
      */
