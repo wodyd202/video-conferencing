@@ -4,6 +4,7 @@ import com.ljy.videoclass.classroom.command.application.OpenClassroomService;
 import com.ljy.videoclass.classroom.domain.OpenClassroom;
 import com.ljy.videoclass.classroom.domain.read.ClassroomModel;
 import com.ljy.videoclass.classroom.domain.value.Register;
+import com.ljy.videoclass.elrolment.domain.value.ElrolmentState;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,6 +33,15 @@ public class ElrolmentAPI_Test {
 
         mockMvc.perform(get("/api/elrolment/{classroomCode}", classroomModel.getCode())
                         .param("state","NOT"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void findByRequester() throws Exception {
+        mockMvc.perform(get("/api/elrolment")
+                        .param("state", "NOT")
+                        .param("page","0")
+                        .param("size","10"))
                 .andExpect(status().isOk());
     }
 }

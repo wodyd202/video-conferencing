@@ -1,6 +1,8 @@
 package com.ljy.videoclass.elrolment.query.infrastructure;
 
 import com.ljy.videoclass.classroom.domain.read.ElrolmentModel;
+import com.ljy.videoclass.core.http.PageRequest;
+import com.ljy.videoclass.elrolment.domain.read.ElrolmentUserModel;
 import com.ljy.videoclass.elrolment.domain.value.ClassroomCode;
 import com.ljy.videoclass.elrolment.domain.value.ElrolmentState;
 import com.ljy.videoclass.elrolment.query.application.ElrolmentSearchRepository;
@@ -20,15 +22,41 @@ public class QuerydslElrolementSearchRepository implements ElrolmentSearchReposi
     @Autowired private JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ElrolmentModel> findByCodeAndState(ClassroomCode classroomCode, ElrolmentState state) {
-        return jpaQueryFactory.select(Projections.constructor(ElrolmentModel.class,
+    public List<ElrolmentUserModel> findByCodeAndState(ClassroomCode classroomCode, ElrolmentState state) {
+        return jpaQueryFactory.select(Projections.constructor(ElrolmentUserModel.class,
                         asSimple(classroomCode),
-                        elrolmentUser.userId,
-                        elrolmentUser.state,
+                        elrolmentUser.requesterInfo(),
+                        asSimple(state),
                         elrolmentUser.elrolmentDate))
                 .from(elrolmentUser)
                 .where(eqCode(classroomCode), eqState(state))
                 .fetch();
+    }
+
+    @Override
+    public List<ElrolmentModel> findByRegisterAndState(String requester, ElrolmentState state, PageRequest pageRequest) {
+        return jpaQueryFactory.select(Projections.constructor(ElrolmentModel.class,
+                        elrolmentUser.code,
+                        elrolmentUser.requesterInfo(),
+                        asSimple(state),
+                        elrolmentUser.elrolmentDate))
+                .from(elrolmentUser)
+                .where(eqRequester(requester), eqState(state))
+                .limit(pageRequest.getSize())
+                .offset(pageRequest.getSize() * pageRequest.getPage())
+                .fetch();
+    }
+
+    @Override
+    public long countByRegisterAndState(String requester, ElrolmentState state) {
+        return jpaQueryFactory.selectOne()
+                .from(elrolmentUser)
+                .where(eqRequester(requester), eqState(state))
+                .fetchCount();
+    }
+
+    private BooleanExpression eqRequester(String requester) {
+        return elrolmentUser.requesterInfo().requester.eq(requester);
     }
 
     private BooleanExpression eqCode(ClassroomCode classroomCode){

@@ -31,7 +31,6 @@
                         <span class="badge bg-primary btn-sm position-relative">
                             수강신청 사용자
                             <span id="joinRequestCnt" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                99+
                             </span>
                         </span>
                     </h5>
@@ -43,7 +42,6 @@
                         <span class="badge bg-secondary position-relative">
                             수강자
                             <span id="joinCnt" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                99+
                             </span>
                         </span>
                     </h5>
@@ -90,6 +88,7 @@
 </div>
 <div layout:fragment="scripts">
     <script>
+        const code = getParameterByName('code');
         var classroomTitle = document.getElementById('classroomTitle');
         var hour = document.getElementById('hour');
         var dayOfWeek = document.getElementById('dayOfWeek');
@@ -123,67 +122,59 @@
         }
 
         function getJoinRequestData(){
-            const data = [{
-                id : 'dlwodyd202',
-                name : '이재용'
-            },{
-                id : 'dlwodyd203',
-                name : '삼재용'
-            },{
-                id : 'dlwodyd204',
-                name : '사재용'
-            }];
-            let content = '';
-            data.map(user=>{
-                content += `<div onclick="joinConfirm('${user['name']}','${user['id']}')" class="d-flex mt-4 student-card" style="padding: 10px;">
-                              <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+            axios.get(`/api/elrolment/${code}`,{
+                params : {
+                    state : 'NOT'
+                }
+            }).then(res=>{
+                res = res['data']['response'];
+
+                let content = '';
+                res.map(elrolment=>{
+                    content += `<div onclick="joinConfirm('${elrolment['requester']['requesterName']}','${elrolment['requester']['requesterEmail']}','${elrolment['requester']['requester']}')" class="d-flex mt-4 student-card" style="padding: 10px;">
+                              <div class="flex-shrink-0"><img class="rounded-circle" src="${elrolment['requester']['requesterImage']}" alt="..." style="width: 50px; height: 50px;"/></div>
                                     <div class="ms-3">
-                                        <div class="fw-bold">${user['name']}</div>
+                                        <div class="fw-bold">${elrolment['requester']['requesterName']}</div>
                                     <div>
-                                    ${user['id']}
+                                    ${elrolment['requester']['requesterEmail']}
                                     </div>
                               </div>
                         </div>`
+                });
+                joinRequestList.innerHTML = content;
+                joinRequestCnt.innerHTML = res.length;
             });
-            joinRequestCnt.innerText = data.length + "+";
-            joinRequestList.innerHTML = content;
         }
 
         function getJoinData(){
-            const data = [{
-                id : 'dlwodyd202',
-                name : '이재용'
-            },{
-                id : 'dlwodyd203',
-                name : '삼재용'
-            },{
-                id : 'dlwodyd204',
-                name : '사재용'
-            },{
-                id : 'dlwodyd204',
-                name : '사재용'
-            }];
-            let content = '';
-            data.map(user=>{
-                content += `<div onclick="cencelConfirm('${user['name']}','${user['id']}')" class="d-flex mt-4 student-card" style="padding: 10px;">
-                              <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+            axios.get(`/api/elrolment/${code}`,{
+                params : {
+                    state : 'ALLOWED'
+                }
+            }).then(res=>{
+                res = res['data']['response'];
+
+                let content = '';
+                res.map(elrolment=>{
+                    content += `<div onclick="cencelConfirm('${elrolment['requester']['requesterName']}','${elrolment['requester']['requesterEmail']}','${elrolment['requester']['requester']}')" class="d-flex mt-4 student-card" style="padding: 10px;">
+                              <div class="flex-shrink-0"><img class="rounded-circle" src="${elrolment['requester']['requesterImage']}" alt="..." style="width: 50px; height: 50px;"/></div>
                                     <div class="ms-3">
-                                        <div class="fw-bold">${user['name']}</div>
+                                        <div class="fw-bold">${elrolment['requester']['requesterName']}</div>
                                     <div>
-                                    ${user['id']}
+                                    ${elrolment['requester']['requesterEmail']}
                                     </div>
                               </div>
                         </div>`
+                });
+                joinCnt.innerText = res.length + "+";
+                joinList.innerHTML = content;
             });
-            joinCnt.innerText = data.length + "+";
-            joinList.innerHTML = content;
         }
 
         function init(){
             var cencelYesBtn = document.getElementById("cencelYesBtn");
             cencelYesBtn.addEventListener('click', ()=>{
                 //// 퇴출 로직 추가해야함
-
                 cencelConfirmModal.hide();
                 showAlert('퇴출 완료');
             });
@@ -193,8 +184,13 @@
             joinYesBtn.addEventListener('click',()=>{
                 //// 승인 로직 추가해야함
 
-                joinConfirmModal.hide();
-                showAlert('승인 완료');
+                axios.put(`/api/classroom/${code}/elrolment/${selectJoinRequesterId}`)
+                .then(res=>{
+                    joinConfirmModal.hide();
+                    showAlert('승인 완료');
+                }).catch(error=>{
+                    showMessage(error.response['data']);
+                });
             });
         }
 
@@ -208,16 +204,16 @@
             },1000);
         }
 
-        function joinConfirm(name, id){
+        function joinConfirm(name, email, id){
             selectJoinRequesterId = id;
-            document.getElementById("joinRequesterId").innerText = id;
+            document.getElementById("joinRequesterId").innerText = email;
             document.getElementById("joinRequesterName").innerText = name;
             joinConfirmModal.show();
         }
 
-        function cencelConfirm(name, id){
+        function cencelConfirm(name, email, id){
             selectCencelRequesterId = id;
-            document.getElementById("cencelRequesterId").innerText = id;
+            document.getElementById("cencelRequesterId").innerText = email;
             document.getElementById("cencelRequesterName").innerText = name;
             cencelConfirmModal.show();
         }

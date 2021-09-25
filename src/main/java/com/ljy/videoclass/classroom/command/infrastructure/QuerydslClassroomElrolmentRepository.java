@@ -19,12 +19,12 @@ public class QuerydslClassroomElrolmentRepository implements ElrolmentRepository
     public Optional<ElrolmentModel> findByClassroomCodeAndRequester(String classroomCode, String requester) {
         ElrolmentModel elrolmentUser = jpaQueryFactory.select(Projections.constructor(ElrolmentModel.class,
                     QElrolmentUser.elrolmentUser.code,
-                    QElrolmentUser.elrolmentUser.userId,
+                    QElrolmentUser.elrolmentUser.requesterInfo().requester,
                     QElrolmentUser.elrolmentUser.state,
                     QElrolmentUser.elrolmentUser.elrolmentDate
                 ))
                 .from(QElrolmentUser.elrolmentUser)
-                .where(QElrolmentUser.elrolmentUser.code.eq(ClassroomCode.of(classroomCode)).and(QElrolmentUser.elrolmentUser.userId.eq(Requester.of(requester))))
+                .where(QElrolmentUser.elrolmentUser.code.eq(ClassroomCode.of(classroomCode)).and(QElrolmentUser.elrolmentUser.requesterInfo().requester.eq(requester)))
                 .fetchFirst();
         return Optional.ofNullable(elrolmentUser);
     }

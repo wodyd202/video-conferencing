@@ -22,6 +22,9 @@ public class MainController {
         return "class-config";
     }
 
+    @GetMapping("my-elrolment-list")
+    public String myElrolmentList(){return "elrolmentList";}
+
     @GetMapping("update-class")
     public String updateClass(){
         return "update-class";

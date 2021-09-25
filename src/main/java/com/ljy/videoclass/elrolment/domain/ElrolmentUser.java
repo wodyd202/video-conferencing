@@ -6,6 +6,7 @@ import com.ljy.videoclass.elrolment.domain.read.ElrolmentUserModel;
 import com.ljy.videoclass.elrolment.domain.value.ClassroomCode;
 import com.ljy.videoclass.elrolment.domain.value.ElrolmentState;
 import com.ljy.videoclass.elrolment.domain.value.Requester;
+import com.ljy.videoclass.elrolment.domain.value.RequesterInfo;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -22,8 +23,8 @@ public class ElrolmentUser {
     @Convert(converter = ClassroomCodeConverter.class)
     private final ClassroomCode code;
 
-    @Convert(converter = RequsterConverter.class)
-    private final Requester userId;
+    @Embedded
+    private final RequesterInfo requesterInfo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 7)
@@ -33,17 +34,17 @@ public class ElrolmentUser {
     private LocalDate elrolmentDate;
 
     protected ElrolmentUser(){
-        code = null; userId = null;}
+        code = null; requesterInfo = null;}
 
-    private ElrolmentUser(ClassroomCode code, Requester userId) {
+    private ElrolmentUser(ClassroomCode code, RequesterInfo requesterInfo) {
         identifier = UUID.randomUUID().toString();
         this.code = code;
-        this.userId = userId;
+        this.requesterInfo = requesterInfo;
         state = ElrolmentState.NOT;
         elrolmentDate = LocalDate.now();
     }
 
-    public static ElrolmentUser elrolment(ClassroomCode classroomCode, Requester requester){
+    public static ElrolmentUser elrolment(ClassroomCode classroomCode, RequesterInfo requester){
         return new ElrolmentUser(classroomCode, requester);
     }
 
@@ -54,7 +55,7 @@ public class ElrolmentUser {
     public ElrolmentUserModel toModel(){
         return ElrolmentUserModel.builder()
                 .classroomCode(code)
-                .requester(userId)
+                .requester(requesterInfo)
                 .state(state)
                 .elrolmentDate(elrolmentDate)
                 .build();

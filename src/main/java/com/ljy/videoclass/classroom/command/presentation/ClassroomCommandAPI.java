@@ -119,7 +119,8 @@ public class ClassroomCommandAPI {
             ClassroomNotFoundException.class,
             AlreadyDisabledClassException.class,
             AlreadyActiveClassException.class,
-            AlreadyElrolmentException.class
+            AlreadyElrolmentException.class,
+            AlreadyAllowedElrolmentException.class
     })
     public ResponseEntity<String> error(IllegalArgumentException e){
         return ResponseEntity.badRequest().body(e.getMessage());

@@ -2,7 +2,6 @@ package com.ljy.videoclass.classroom.domain.read;
 
 import com.ljy.videoclass.elrolment.domain.value.ClassroomCode;
 import com.ljy.videoclass.elrolment.domain.value.ElrolmentState;
-import com.ljy.videoclass.elrolment.domain.value.Requester;
 
 import java.time.LocalDate;
 
@@ -12,9 +11,9 @@ public class ElrolmentModel {
     private String state;
     private LocalDate elrolmentDate;
 
-    public ElrolmentModel(ClassroomCode classroomCode, Requester requester, ElrolmentState elrolmentState, LocalDate elrolmentDate){
+    public ElrolmentModel(ClassroomCode classroomCode, String requester, ElrolmentState elrolmentState, LocalDate elrolmentDate){
         this.code = classroomCode.get();
-        this.requester = requester.get();
+        this.requester = requester;
         this.state = elrolmentState.toString();
         this.elrolmentDate = elrolmentDate;
     }

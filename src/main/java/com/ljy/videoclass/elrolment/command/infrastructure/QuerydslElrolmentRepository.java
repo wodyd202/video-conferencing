@@ -1,8 +1,7 @@
-package com.ljy.videoclass.classroom;
+package com.ljy.videoclass.elrolment.command.infrastructure;
 
-import com.ljy.videoclass.elrolment.command.ElrolmentRepository;
+import com.ljy.videoclass.elrolment.command.application.ElrolmentRepository;
 import com.ljy.videoclass.elrolment.domain.ElrolmentUser;
-import com.ljy.videoclass.elrolment.domain.QElrolmentUser;
 import com.ljy.videoclass.elrolment.domain.value.ClassroomCode;
 import com.ljy.videoclass.elrolment.domain.value.Requester;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -35,7 +34,7 @@ public class QuerydslElrolmentRepository implements ElrolmentRepository {
     public Optional<ElrolmentUser> findByCodeAndRequester(ClassroomCode classroomCode, Requester requester) {
         return Optional.ofNullable(jpaQueryFactory.select(elrolmentUser)
                 .from(elrolmentUser)
-                .where(elrolmentUser.code.eq(classroomCode).and(elrolmentUser.userId.eq(requester)))
+                .where(elrolmentUser.code.eq(classroomCode).and(elrolmentUser.requesterInfo().requester.eq(requester.get())))
                 .fetchFirst());
     }
 }

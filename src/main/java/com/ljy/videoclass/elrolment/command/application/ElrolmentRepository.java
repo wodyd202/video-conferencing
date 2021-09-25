@@ -1,4 +1,4 @@
-package com.ljy.videoclass.elrolment.command;
+package com.ljy.videoclass.elrolment.command.application;
 
 import com.ljy.videoclass.elrolment.domain.ElrolmentUser;
 import com.ljy.videoclass.classroom.domain.read.ErolmentUserModel;
