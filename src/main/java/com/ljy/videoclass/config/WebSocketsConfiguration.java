@@ -1,6 +1,6 @@
 package com.ljy.videoclass.config;
 
-import com.ljy.videoclass.classroom.command.infrastructure.SignalingSocketHandler;
+import com.ljy.videoclass.services.classroom.command.infrastructure.SignalingSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;

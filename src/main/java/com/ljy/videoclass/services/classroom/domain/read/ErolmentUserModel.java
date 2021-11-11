@@ -1,0 +1,31 @@
+package com.ljy.videoclass.services.classroom.domain.read;
+
+import com.ljy.videoclass.services.elrolment.domain.value.ElrolmentState;
+import lombok.Builder;
+
+import java.time.LocalDate;
+
+public class ErolmentUserModel {
+    private String userId;
+    private ElrolmentState state;
+    private LocalDate erolmentDate;
+
+    @Builder
+    private ErolmentUserModel(String userId, ElrolmentState state, LocalDate erolmentDate) {
+        this.userId = userId;
+        this.state = state;
+        this.erolmentDate = erolmentDate;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public ElrolmentState getState() {
+        return state;
+    }
+
+    public LocalDate getErolmentDate() {
+        return erolmentDate;
+    }
+}
