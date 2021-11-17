@@ -2,8 +2,10 @@ package com.ljy.videoclass.services.user.domain.value;
 
 import com.ljy.videoclass.services.user.domain.exception.InvalidNameException;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Username {
     private final String name;
     protected Username(){name=null;}

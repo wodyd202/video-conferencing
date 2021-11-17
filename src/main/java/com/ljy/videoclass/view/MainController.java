@@ -1,7 +1,6 @@
 package com.ljy.videoclass.view;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
@@ -44,4 +43,10 @@ public class MainController {
     public String joinClass(){
         return "join-class";
     }
+
+    @GetMapping("test")
+    public String test(){return "test";}
+
+    @GetMapping("test2")
+    public String test2(){ return "test2"; }
 }

@@ -8,15 +8,18 @@ import lombok.Builder;
 
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import java.util.Objects;
 
 @Embeddable
 public class UserInfo {
-    @Convert(converter = EmailConverter.class)
-    private final Email email;
-    @Convert(converter = UsernameConverter.class)
+    @Embedded
+    private Email email;
+
+    @Embedded
     private Username username;
-    @Convert(converter = ImageConverter.class)
+
+    @Embedded
     private Image image;
 
     protected UserInfo(){

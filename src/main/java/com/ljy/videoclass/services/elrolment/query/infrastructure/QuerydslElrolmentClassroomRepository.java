@@ -1,29 +1,23 @@
 package com.ljy.videoclass.services.elrolment.query.infrastructure;
 
-import com.ljy.videoclass.services.elrolment.query.application.ClassroomRepository;
-import com.ljy.videoclass.services.elrolment.query.application.model.ClassroomModel;
-import com.querydsl.core.types.Projections;
+import com.ljy.videoclass.services.elrolment.command.application.external.Classroom;
+import com.ljy.videoclass.services.elrolment.command.application.external.ExternalClassroomRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static com.ljy.videoclass.services.classroom.domain.QClassroom.classroom;
 import static com.querydsl.core.types.dsl.Expressions.asSimple;
 
+@Profile("!test")
 @Repository
-public class QuerydslElrolmentClassroomRepository implements ClassroomRepository {
+public class QuerydslElrolmentClassroomRepository implements ExternalClassroomRepository {
     @Autowired private JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<ClassroomModel> findByCode(String classroomCode) {
-        return Optional.ofNullable(jpaQueryFactory.select(Projections.constructor(ClassroomModel.class,
-                        asSimple(classroomCode),
-                        classroom.register().id
-                    ))
-                .from(classroom)
-                .where(classroom.code().code.eq(classroomCode))
-                .fetchFirst());
+    public Optional<Classroom> getClassroom(String classroomCode) {
+        return null;
     }
 }

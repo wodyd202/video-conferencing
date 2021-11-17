@@ -9,5 +9,7 @@ import java.util.Optional;
 public interface ElrolmentRepository {
     void save(Elrolment elrolmentUser);
 
-    Optional<Elrolment> findByCodeAndRequester(ClassroomCode classroomCode, Requester requester);
+    Optional<Elrolment> findByCodeAndRequesterInfo(ClassroomCode classroomCode, Requester requester);
+
+    void removeByCodeAndRequesterInfo(ClassroomCode classroomCode, Requester requester);
 }

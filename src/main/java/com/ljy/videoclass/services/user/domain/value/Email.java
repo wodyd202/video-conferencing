@@ -2,8 +2,10 @@ package com.ljy.videoclass.services.user.domain.value;
 
 import com.ljy.videoclass.services.user.domain.exception.InvalidEmailException;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Email {
     private final String email;
 

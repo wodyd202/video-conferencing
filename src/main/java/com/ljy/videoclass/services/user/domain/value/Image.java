@@ -2,8 +2,10 @@ package com.ljy.videoclass.services.user.domain.value;
 
 import com.ljy.videoclass.services.user.domain.exception.InvalidImageException;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Image {
     private final String path;
 

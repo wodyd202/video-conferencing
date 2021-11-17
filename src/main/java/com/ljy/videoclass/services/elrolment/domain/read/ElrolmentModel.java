@@ -39,4 +39,14 @@ public class ElrolmentModel {
     public LocalDate getElrolmentDate() {
         return elrolmentDate;
     }
+
+    @Override
+    public String toString() {
+        return "ElrolmentModel{" +
+                "classroomCode='" + classroomCode + '\'' +
+                ", elrolmentRequesterInfo=" + elrolmentRequesterInfo +
+                ", state=" + state +
+                ", elrolmentDate=" + elrolmentDate +
+                '}';
+    }
 }

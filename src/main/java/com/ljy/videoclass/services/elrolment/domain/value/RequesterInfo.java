@@ -30,4 +30,8 @@ public class RequesterInfo {
                 .requesterName(requesterName)
                 .build();
     }
+
+    public String getRequester(){
+        return requester;
+    }
 }

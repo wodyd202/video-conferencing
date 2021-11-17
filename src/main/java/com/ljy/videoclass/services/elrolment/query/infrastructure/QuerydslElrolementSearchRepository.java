@@ -1,6 +1,7 @@
 package com.ljy.videoclass.services.elrolment.query.infrastructure;
 
 import com.ljy.videoclass.core.http.PageRequest;
+import com.ljy.videoclass.services.elrolment.domain.QElrolment;
 import com.ljy.videoclass.services.elrolment.domain.read.ElrolmentModel;
 import com.ljy.videoclass.services.elrolment.domain.value.ClassroomCode;
 import com.ljy.videoclass.services.elrolment.domain.value.ElrolmentState;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.ljy.videoclass.services.elrolment.domain.QElrolmentUser.elrolmentUser;
+import static com.ljy.videoclass.services.elrolment.domain.QElrolment.elrolment;
 import static com.querydsl.core.types.dsl.Expressions.asSimple;
 
 @Repository
@@ -24,10 +25,10 @@ public class QuerydslElrolementSearchRepository implements ElrolmentSearchReposi
     public List<ElrolmentModel> findByCodeAndState(ClassroomCode classroomCode, ElrolmentState state) {
         return jpaQueryFactory.select(Projections.constructor(ElrolmentModel.class,
                         asSimple(classroomCode),
-                        elrolmentUser.requesterInfo(),
+                        elrolment.requesterInfo(),
                         asSimple(state),
-                        elrolmentUser.elrolmentDate))
-                .from(elrolmentUser)
+                        elrolment.elrolmentDate))
+                .from(elrolment)
                 .where(eqCode(classroomCode), eqState(state))
                 .fetch();
     }
@@ -35,11 +36,11 @@ public class QuerydslElrolementSearchRepository implements ElrolmentSearchReposi
     @Override
     public List<com.ljy.videoclass.services.classroom.domain.read.ElrolmentModel> findByRegisterAndState(String requester, ElrolmentState state, PageRequest pageRequest) {
         return jpaQueryFactory.select(Projections.constructor(com.ljy.videoclass.services.classroom.domain.read.ElrolmentModel.class,
-                        elrolmentUser.code,
-                        elrolmentUser.requesterInfo().requester,
+                        elrolment.classroomCode(),
+                        elrolment.requesterInfo().requester,
                         asSimple(state),
-                        elrolmentUser.elrolmentDate))
-                .from(elrolmentUser)
+                        elrolment.elrolmentDate))
+                .from(elrolment)
                 .where(eqRequester(requester), eqState(state))
                 .limit(pageRequest.getSize())
                 .offset(pageRequest.getSize() * pageRequest.getPage())
@@ -49,23 +50,23 @@ public class QuerydslElrolementSearchRepository implements ElrolmentSearchReposi
     @Override
     public long countByRegisterAndState(String requester, ElrolmentState state) {
         return jpaQueryFactory.selectOne()
-                .from(elrolmentUser)
+                .from(elrolment)
                 .where(eqRequester(requester), eqState(state))
                 .fetchCount();
     }
 
     private BooleanExpression eqRequester(String requester) {
-        return elrolmentUser.requesterInfo().requester.eq(requester);
+        return elrolment.requesterInfo().requester.eq(requester);
     }
 
     private BooleanExpression eqCode(ClassroomCode classroomCode){
-        return elrolmentUser.code.eq(classroomCode);
+        return elrolment.classroomCode().eq(classroomCode);
     }
 
     private BooleanExpression eqState(ElrolmentState state){
         if(state == null){
             return null;
         }
-        return elrolmentUser.state.eq(state);
+        return elrolment.state.eq(state);
     }
 }

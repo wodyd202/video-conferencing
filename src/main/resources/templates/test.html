@@ -1,21 +1,51 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>WebRTC Demo</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css">
-</head>
+<title>강의실</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
 <body onbeforeunload="disconnect();">
-<div id="selectedVideosContainer">
-    <video id="remoteView" autoplay="autoplay"></video>
-    <video id="selfView" autoplay="autoplay"></video>
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none; width: 380px;" id="mySidebar">
+    <button onclick="w3_close()" class="w3-bar-item w3-large">채팅창 닫기 &times;</button>
+    <div class="row">
+        <textarea class="form-control" rows="5" id="chatFelid" style="width: 97%"></textarea>
+        <button id="sendBtn" class="btn btn-primary mt-2" style="width: 97%">보내기</button>
+    </div>
+    <div class="row" id="chatMessageArea">
+    </div>
 </div>
-<div id="remoteVideosContainer"></div>
+<div class="w3-teal">
+    <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+    <div style="float: right; position: relative; top: 8px; right: 20px;">
+        <button class="btn btn-primary" id="camera">카메라</button>
+        <button class="btn btn-primary" id="mic">마이크</button>
+        <button class="btn btn-primary" id="display">화면 공유</button>
+    </div>
+</div>
+<div class="container-fluid mt-3">
+    <div class="row" id="remoteVideosContainer">
+        <div class="col-lg-6" id="selectedVideosContainer">
+            <video id="remoteView" autoplay="autoplay" style="width: 300px; height: 300px;"></video>
+        </div>
+        <div class="col-lg-2">
+            <video id="selfView" autoplay="autoplay" style="width: 200px; height:200px;"></video>
+        </div>
+    </div>
+</div>
 <input id="roomid"/>
-<button id="camera">카메라</button>
-<button id="mic">마이크</button>
-<button id="display">화면 공유</button>
 <button id="enterRoomBtn">입장</button>
-<script src='/static/js/adapter-latest.js'></script>
-<script src='/static/main.js'></script>
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script src='/js/main.js'></script>
+<script>
+    function w3_open() {
+        document.getElementById("mySidebar").style.display = "block";
+    }
+
+    function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+    }
+</script>
+
 </body>
 </html>

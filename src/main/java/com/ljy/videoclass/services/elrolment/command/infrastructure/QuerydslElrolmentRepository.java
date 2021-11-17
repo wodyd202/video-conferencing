@@ -6,17 +6,18 @@ import com.ljy.videoclass.services.elrolment.domain.value.ClassroomCode;
 import com.ljy.videoclass.services.elrolment.domain.value.Requester;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
-import static com.ljy.videoclass.services.elrolment.domain.QElrolmentUser.elrolmentUser;
+import static com.ljy.videoclass.services.elrolment.domain.QElrolment.elrolment;
 
 @Repository
-@Primary
+@Transactional
 public class QuerydslElrolmentRepository implements ElrolmentRepository {
     @Autowired private JPAQueryFactory jpaQueryFactory;
     @PersistenceContext private EntityManager entityManager;
@@ -31,10 +32,17 @@ public class QuerydslElrolmentRepository implements ElrolmentRepository {
     }
 
     @Override
-    public Optional<Elrolment> findByCodeAndRequester(ClassroomCode classroomCode, Requester requester) {
-        return Optional.ofNullable(jpaQueryFactory.select(elrolmentUser)
-                .from(elrolmentUser)
-                .where(elrolmentUser.code.eq(classroomCode).and(elrolmentUser.requesterInfo().requester.eq(requester.get())))
+    public Optional<Elrolment> findByCodeAndRequesterInfo(ClassroomCode classroomCode, Requester requester) {
+        return Optional.ofNullable(jpaQueryFactory.select(elrolment)
+                .from(elrolment)
+                .where(elrolment.classroomCode().eq(classroomCode).and(elrolment.requesterInfo().requester.eq(requester.get())))
                 .fetchFirst());
+    }
+
+    @Override
+    public void removeByCodeAndRequesterInfo(ClassroomCode classroomCode, Requester requester) {
+        jpaQueryFactory.delete(elrolment)
+                .where(elrolment.classroomCode().eq(classroomCode).and(elrolment.requesterInfo().requester.eq(requester.get())))
+                .execute();
     }
 }

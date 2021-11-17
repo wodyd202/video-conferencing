@@ -2,17 +2,23 @@ package com.ljy.videoclass.services.classroom.command.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class Utils {
-    private Utils() {
-    }
-
+final public class Utils {
+    private Utils() {}
     private static ObjectMapper objectMapper = new ObjectMapper();
-
-    public static SignalMessage getObject(final String message) throws Exception {
-        return objectMapper.readValue(message, SignalMessage.class);
+    public static Message getObject(final String message) {
+        try{
+            return objectMapper.readValue(message, Message.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
-
-    public static String getString(final SignalMessage message) throws Exception {
-        return objectMapper.writeValueAsString(message);
+    public static String getString(final Message message) {
+        try{
+            return objectMapper.writeValueAsString(message);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

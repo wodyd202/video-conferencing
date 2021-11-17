@@ -17,4 +17,14 @@ public class ElrolmentRequesterInfoModel {
         this.requesterEmail = requesterEmail;
         this.requesterName = requesterName;
     }
+
+    @Override
+    public String toString() {
+        return "ElrolmentRequesterInfoModel{" +
+                "requester='" + requester + '\'' +
+                ", requesterImage='" + requesterImage + '\'' +
+                ", requesterEmail='" + requesterEmail + '\'' +
+                ", requesterName='" + requesterName + '\'' +
+                '}';
+    }
 }
