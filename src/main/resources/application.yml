@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    include: oauth, view, database, ssl
+    include: view, database, ssl, redis
   devtools:
     livereload:
       enabled: true

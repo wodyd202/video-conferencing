@@ -1,6 +1,7 @@
-const HOST = "192.168.45.242";
+const HOST = "192.168.45.111";
 const PORT = 8443;
-const CODE = getQueryStringObject().code;
+const QUERY_STRING = getQueryStringObject();
+const CODE = QUERY_STRING.code;
 const MAPPING = "/class";
 const peerConnectionConfig = {
     'iceServers': [
@@ -11,22 +12,50 @@ const peerConnectionConfig = {
 let ws;
 let localStream;
 let connections = {};
+
+const currentUserId = document.getElementById('currentUserId').value;
 const shareScreen = document.getElementById('shareScreen');
 const originScreen = document.getElementById('originScreen');
 
 const selfView = document.getElementById("selfView");
 const container = document.getElementById("remoteVideosContainer");
 const sendBtn = document.getElementById('sendBtn');
+const shakeBtn = document.getElementById('shakeBtn');
+const chatAbleBtn = document.getElementById('chatAbleBtn');
+
 const chatFelid = document.getElementById('chatFelid');
 const chatMessageArea = document.getElementById('chatMessageArea');
+const alramArea = document.getElementById('alramArea');
+const joinerList = document.getElementById('joinerList');
+const joinerCount = document.getElementById('joinerCount');
 
 const bigSizeVideoContainer = document.getElementById('bigSizeVideoContainer');
 const bigSizeVideo = document.getElementById('bigSizeVideo');
 
-let cameraFlag = true;
-let micFlag = true;
+const chatArea = document.getElementById('chatArea');
+const videoArea = document.getElementById('videoArea');
+let chatFlag = false;
+
+let cameraFlag = QUERY_STRING.cam === 'true' ? true : false;
+let micFlag = QUERY_STRING.mic === 'true' ? true : false;
+
+let currentLayout = 'col-3';
 
 init(CODE);
+
+// 채팅창 활성화
+chatAbleBtn.addEventListener('click', ()=>{
+    chatFlag = !chatFlag;
+    if(chatFlag){
+        videoArea.classList.remove('col-12');
+        videoArea.classList.add('col-8');
+        chatArea.style.display = 'block';
+    }else{
+        videoArea.classList.remove('col-8');
+        videoArea.classList.add('col-12');
+        chatArea.style.display = 'none';
+    }
+});
 
 // 전체화면 해제
 bigSizeVideo.addEventListener('click', ()=>{
@@ -35,35 +64,55 @@ bigSizeVideo.addEventListener('click', ()=>{
     container.style.display = 'block';
 });
 
+// 흔들기 버튼 클릭
+shakeBtn.addEventListener('click', ()=>{
+    sendMessage({
+        type : 'shake'
+    });
+});
+
+// 채팅중 엔터키 입력
+chatFelid.addEventListener('keyup', (event)=>{
+    const message = chatFelid.value.trim();
+    if(event.keyCode === 13 && message !== ''){
+        sendMessage({
+            type : 'chat',
+            data : message
+        });
+        printChatMessage("",message,true,false);
+    }
+});
+
 // 채팅 메시지 보내기
 sendBtn.addEventListener('click', ()=>{
-    if(chatFelid.value.trim() === ''){
+    const message = chatFelid.value.trim();
+    if(message === ''){
         alert('메시지를 입력해주세요.');
         chatFelid.focus();
         return;
     }
-   sendMessage({
-       type : 'chat',
-       data : chatFelid.value.trim()
-   });
-    let childDiv = document.createElement('div');
-    childDiv.classList.add('media-body');
-    childDiv.style.float = 'right';
+    sendMessage({
+        type : 'chat',
+        data : message
+    });
+    printChatMessage("", message, true,false);
+});
 
-    let childP = document.createElement('p');
-    childP.innerText = chatFelid.value.trim();
+// 회의에서 나가기
+document.getElementById('exitBtn').addEventListener('click', ()=>{
+    location.href = './class-list';
+});
 
-    childDiv.appendChild(childP);
+// 설정
+document.getElementById('settingComplateBtn').addEventListener('click', ()=>{
+   const changeLayout = document.getElementById('changeLayoutSelect').value;
 
-    let parentDiv = document.createElement("div");
-    parentDiv.classList.add('media');
-    parentDiv.classList.add('p-3');
-
-    parentDiv.appendChild(childDiv);
-
-    chatMessageArea.appendChild(parentDiv);
-    chatFelid.value = '';
-    chatFelid.focus();
+   const videos = document.getElementsByTagName('video');
+   for(let i =0;i<videos.length;i++){
+       videos[i].classList.remove(currentLayout);
+       videos[i].classList.add(changeLayout);
+   }
+   currentLayout = changeLayout;
 });
 
 // 카메라
@@ -81,8 +130,8 @@ document.getElementById("mic").addEventListener("click", ()=>{
 // 화면 공유
 shareScreen.addEventListener('click', ()=>{
     navigator.mediaDevices.getDisplayMedia({
-        audio: true,
-        video: true
+        audio: micFlag,
+        video: cameraFlag
     }).then(function(stream){
         for(let uuid in connections){
             connections[uuid].getSenders().forEach(sender => {
@@ -98,8 +147,8 @@ shareScreen.addEventListener('click', ()=>{
 
 originScreen.addEventListener('click', ()=>{
     navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true
+        audio: micFlag,
+        video: cameraFlag
     }).then(function(stream){
         for(let uuid in connections){
             connections[uuid].getSenders().forEach(sender => {
@@ -119,6 +168,10 @@ function init(code) {
         console.log("Stream OK");
         localStream = stream;
         selfView.srcObject = stream;
+        localStream.getVideoTracks()[0].enabled = cameraFlag;
+        localStream.getAudioTracks()[0].enabled = micFlag;
+        document.getElementById('camera').checked = cameraFlag;
+        document.getElementById('mic').checked = micFlag;
         selfView.addEventListener('click', ()=>{
             container.style.display = 'none';
             bigSizeVideoContainer.style.display = 'block';
@@ -137,8 +190,18 @@ function init(code) {
 function processWsMessage(message) {
     var signal = JSON.parse(message.data);
     switch (signal.type) {
+        case "shake":
+            handleShake(signal);
+            break;
+        case "join":
+            handleJoin(signal);
+            break;
+        case "enter":
+            handleEnter(signal);
+            break;
         case 'chat':
             handleChat(signal);
+            break;
         case 'init':
             handleInit(signal);
             break;
@@ -175,32 +238,100 @@ function handleInit(signal) {
     });
 }
 
+function handleShake(signal){
+    showAlram('shake', signal.sender, signal.sender + "님이 손을 흔드셨습니다.");
+    const video = document.getElementById('video_' + signal.sender);
+    video.classList.add('shake');
+
+    setTimeout(()=>{
+        video.classList.remove('shake');
+    },2000);
+}
+
+function handleJoin(signal){
+    showAlram('join', signal.sender, signal.sender + "님이 입장하셨습니다.");
+}
+
+function showAlram(type, userId, message){
+    const parentDiv = document.createElement('div');
+    parentDiv.classList.add('toast');
+    parentDiv.classList.add('show');
+    parentDiv.id = type + '_' + userId;
+
+    const childDiv = document.createElement('div');
+    childDiv.classList.add('toast-header');
+
+    const childStrong = document.createElement('strong');
+    childStrong.classList.add('me-auto');
+    childStrong.innerText = message;
+
+    childDiv.appendChild(childStrong);
+    parentDiv.appendChild(childDiv);
+
+    alramArea.appendChild(parentDiv);
+
+    setTimeout(()=>{
+        const joinAlram = document.getElementById(type + '_' + userId);
+        joinAlram.parentNode.removeChild(joinAlram);
+    },3000);
+}
+
+function handleEnter(signal){
+    const messageList = signal.data;
+    messageList.forEach(messageInfo=>{
+        printChatMessage(messageInfo.sender, messageInfo.message, currentUserId === messageInfo.sender,true);
+    })
+}
+
 function handleChat(signal){
-    console.log(signal.data);
+    printChatMessage(signal.sender, signal.data, false,true);
+    if(!chatFlag){
+        showAlram("show_message", signal.sender, signal.sender + "님의 메시지를 확인해주세요.");
+    }
+}
+
+// 대화창에 메시지 띄움
+function printChatMessage(sender, message, isMy, isLoad){
     let childDiv = document.createElement('div');
     childDiv.classList.add('media-body');
 
-    let childTitle = document.createElement('div');
-    childTitle.innerText = signal.data;
-    let childP = document.createElement('p');
-    childP.innerText = chatFelid.value.trim();
+    // 나의 메시지
+    if(isMy){
+        childDiv.style.float = 'right';
+    }else{
+        let childTitle = document.createElement('h6');
+        childTitle.innerText = sender;
 
-    childDiv.appendChild(childTitle);
+        childDiv.appendChild(childTitle);
+    }
+
+    let childP = document.createElement('p');
+    childP.innerText = message;
+
     childDiv.appendChild(childP);
 
     let parentDiv = document.createElement("div");
     parentDiv.classList.add('media');
-    parentDiv.classList.add('p-3');
     parentDiv.appendChild(childDiv);
 
     chatMessageArea.appendChild(parentDiv);
+    if(!isLoad){
+        chatFelid.value = '';
+        chatFelid.focus();
+    }
+    chatMessageArea.scrollTop = chatMessageArea.scrollHeight;
 }
 
 function handleLogout(signal) {
-    var peerId = signal.sender;
-    delete connections[peerId];
+    var peerId = "video_" + signal.sender;
+    delete connections[signal.sender];
     var videoElement = document.getElementById(peerId);
     videoElement.outerHTML = "";
+
+    document.getElementById('joiner_' + signal.sender).outerHTML = '';
+    showAlram('logout', signal.sender, signal.sender + "님이 퇴장하셨습니다.");
+    joinerCount.innerText = parseInt(joinerCount.innerText) - 1;
+
     delete videoElement;
 }
 
@@ -242,10 +373,9 @@ function handleIce(signal) {
     }
 }
 
-function getRTCPeerConnectionObject(uuid) {
-
-    if(connections[uuid]) {
-        return connections[uuid];
+function getRTCPeerConnectionObject(userId) {
+    if(connections[userId]) {
+        return connections[userId];
     }
 
     var connection = new RTCPeerConnection(peerConnectionConfig);
@@ -257,14 +387,14 @@ function getRTCPeerConnectionObject(uuid) {
         if (event.candidate) {
             sendMessage({
                 type: "ice",
-                receiver: uuid,
+                receiver: userId,
                 data: event.candidate
             });
         }
     };
 
     connection.onaddstream = function(event) {
-        console.log('Received new stream from ' + uuid);
+        console.log('Received new stream from ' + userId);
         const video = document.createElement("video");
         video.classList.add('col-3');
         video.addEventListener('click', ()=>{
@@ -273,12 +403,20 @@ function getRTCPeerConnectionObject(uuid) {
             bigSizeVideo.srcObject = event.stream;
         });
         container.appendChild(video);
-        video.id = uuid;
+        video.id = "video_" + userId;
         video.autoplay = true;
         video.srcObject = event.stream;
+
+        const parentLi = document.createElement('li');
+        parentLi.classList.add('list-group-item');
+        parentLi.id = 'joiner_' + userId;
+        parentLi.innerText = userId;
+
+        joinerList.appendChild(parentLi);
+        joinerCount.innerText = parseInt(joinerCount.innerText) + 1;
     };
 
-    connections[uuid] = connection;
+    connections[userId] = connection;
     return connection;
 }
 

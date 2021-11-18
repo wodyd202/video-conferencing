@@ -47,6 +47,6 @@ public class MainController {
     @GetMapping("test")
     public String test(){return "test";}
 
-    @GetMapping("test2")
-    public String test2(){ return "test2"; }
+    @GetMapping("classroom")
+    public String test2(){ return "classroom"; }
 }

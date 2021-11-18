@@ -1,5 +1,6 @@
 package com.ljy.videoclass.services.classroom.command.infrastructure.model;
 
+import com.ljy.videoclass.services.classroom.command.infrastructure.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -59,8 +60,9 @@ public class SocketClassroom {
      * @param session
      * # 수업 참여
      */
-    public void join(WebSocketSession session) {
-        studentMap.put(session.getId(), session);
+    public void join(String userId, WebSocketSession session, String message) {
+        noticeAll(session, message);
+        studentMap.put(userId, session);
     }
 
     /**

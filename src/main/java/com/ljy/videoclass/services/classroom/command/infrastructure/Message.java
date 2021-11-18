@@ -22,7 +22,17 @@ public class Message {
         this.sender = sender;
     }
 
+    public Message(String type, String sender, Object data){
+        this.type = type;
+        this.sender = sender;
+        this.data = data;
+    }
+
     public boolean isChat() {
         return type.equals("chat");
+    }
+
+    public boolean isShake() {
+        return type.equals("shake");
     }
 }
