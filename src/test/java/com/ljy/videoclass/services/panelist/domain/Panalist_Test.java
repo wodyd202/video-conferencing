@@ -1,12 +1,16 @@
 package com.ljy.videoclass.services.panelist.domain;
 
-import com.ljy.videoclass.services.panelist.*;
+import com.ljy.videoclass.services.classroom.command.application.PanelistMapper;
+import com.ljy.videoclass.services.classroom.command.application.model.SignUpPanalist;
+import com.ljy.videoclass.services.panelist.domain.model.PanelistModel;
+import com.ljy.videoclass.services.panelist.domain.value.Email;
+import com.ljy.videoclass.services.panelist.domain.value.Password;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.ljy.videoclass.services.panelist.PanelistStatus.ACTIVE;
-import static com.ljy.videoclass.services.panelist.PanelistStatus.DE_ACTIVE;
+import static com.ljy.videoclass.services.panelist.domain.value.PanelistStatus.ACTIVE;
+import static com.ljy.videoclass.services.panelist.domain.value.PanelistStatus.DE_ACTIVE;
 import static com.ljy.videoclass.services.panelist.domain.PanelistFixture.aPanelist;
 import static org.junit.jupiter.api.Assertions.*;
 

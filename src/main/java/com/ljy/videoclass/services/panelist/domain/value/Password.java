@@ -1,7 +1,9 @@
-package com.ljy.videoclass.services.panelist;
+package com.ljy.videoclass.services.panelist.domain.value;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Password {
     private final String value;
     protected Password(){value = null;}
@@ -34,5 +36,9 @@ public class Password {
         return "Password{" +
                 "value='" + value + '\'' +
                 '}';
+    }
+
+    public String get() {
+        return value;
     }
 }

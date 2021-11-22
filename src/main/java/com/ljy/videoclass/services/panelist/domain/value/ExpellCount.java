@@ -1,5 +1,8 @@
-package com.ljy.videoclass.services.panelist;
+package com.ljy.videoclass.services.panelist.domain.value;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class ExpellCount {
     private static final ExpellCount INSTANCE = new ExpellCount();
     private short count;

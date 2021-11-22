@@ -1,9 +1,11 @@
-package com.ljy.videoclass.services.panelist;
+package com.ljy.videoclass.services.panelist.domain.value;
 
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+@Embeddable
 public class Email implements Serializable {
     private final String value;
 

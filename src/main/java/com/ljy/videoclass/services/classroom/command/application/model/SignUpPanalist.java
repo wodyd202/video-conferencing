@@ -1,4 +1,4 @@
-package com.ljy.videoclass.services.panelist;
+package com.ljy.videoclass.services.classroom.command.application.model;
 
 import lombok.Builder;
 import lombok.Getter;

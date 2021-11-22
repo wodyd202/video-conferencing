@@ -1,5 +1,8 @@
-package com.ljy.videoclass.services.panelist;
+package com.ljy.videoclass.services.panelist.domain.model;
 
+import com.ljy.videoclass.services.panelist.domain.value.Email;
+import com.ljy.videoclass.services.panelist.domain.value.ExpellCount;
+import com.ljy.videoclass.services.panelist.domain.value.PanelistStatus;
 import lombok.Builder;
 import lombok.Getter;
 

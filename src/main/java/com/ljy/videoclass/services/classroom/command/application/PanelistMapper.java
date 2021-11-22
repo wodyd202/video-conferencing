@@ -1,5 +1,9 @@
-package com.ljy.videoclass.services.panelist;
+package com.ljy.videoclass.services.classroom.command.application;
 
+import com.ljy.videoclass.services.classroom.command.application.model.SignUpPanalist;
+import com.ljy.videoclass.services.panelist.domain.Panelist;
+import com.ljy.videoclass.services.panelist.domain.value.Email;
+import com.ljy.videoclass.services.panelist.domain.value.Password;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
