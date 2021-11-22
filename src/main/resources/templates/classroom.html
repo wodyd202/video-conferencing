@@ -48,7 +48,7 @@
 <div class="row">
     <div class="col-12 row p-3" id="videoArea">
         <div id="remoteVideosContainer">
-            <video id="selfView" autoplay="autoplay" class="col-3" disablePictureInPicture/>
+            <video id="selfView" autoplay="autoplay" class="col-3"/>
         </div>
     </div>
     <!-- 채팅 -->
@@ -115,6 +115,6 @@
 </div>
 <input id="currentUserId" type="hidden" th:value ="${#authentication.getPrincipal().getUsername()}"/>
 <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-<script src='/js/classroom.js'></script>
+<script src="./js/classroom.js"></script>
 </body>
 </html>

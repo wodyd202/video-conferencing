@@ -1,4 +1,4 @@
-const HOST = "192.168.45.111";
+const HOST = "192.168.45.163";
 const PORT = 8443;
 const QUERY_STRING = getQueryStringObject();
 const CODE = QUERY_STRING.code;
@@ -378,7 +378,7 @@ function getRTCPeerConnectionObject(userId) {
         return connections[userId];
     }
 
-    var connection = new RTCPeerConnection(peerConnectionConfig);
+    let connection = new RTCPeerConnection(peerConnectionConfig);
 
     connection.addStream(localStream);
 

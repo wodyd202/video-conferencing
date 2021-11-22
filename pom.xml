@@ -16,7 +16,20 @@
     <properties>
         <java.version>1.8</java.version>
     </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>org.kurento</groupId>
+            <artifactId>kurento-client</artifactId>
+            <version>6.16.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kurento</groupId>
+            <artifactId>kurento-utils-js</artifactId>
+            <version>6.15.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -117,7 +130,6 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
