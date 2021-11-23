@@ -8,11 +8,13 @@ import com.ljy.videoclass.services.panelist.domain.value.Password;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.ljy.videoclass.services.panelist.domain.value.PanelistStatus.ACTIVE;
 import static com.ljy.videoclass.services.panelist.domain.value.PanelistStatus.DE_ACTIVE;
 import static com.ljy.videoclass.services.panelist.domain.PanelistFixture.aPanelist;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * 회의자 도메인 테스트
@@ -39,7 +41,7 @@ public class Panalist_Test {
         // given
         Panelist panelist = Panelist.builder()
                 .email(Email.of("test@google.com"))
-                .password(Password.of("password"))
+                .password(Password.of("password", mock(PasswordEncoder.class)))
                 .build();
 
         // when
@@ -65,7 +67,7 @@ public class Panalist_Test {
         PanelistMapper panalistMapper = new PanelistMapper();
 
         // when
-        Panelist panelist = panalistMapper.mapFrom(signUpPanalist);
+        Panelist panelist = panalistMapper.mapFrom(signUpPanalist, mock(PasswordEncoder.class));
         PanelistModel panalistModel = panelist.toModel();
 
         // then

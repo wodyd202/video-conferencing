@@ -1,5 +1,7 @@
 package com.ljy.videoclass.services.panelist.domain.value;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
@@ -7,15 +9,15 @@ import java.util.Objects;
 public class Password {
     private final String value;
     protected Password(){value = null;}
-    private Password(String value) {
+    private Password(String value, PasswordEncoder passwordEncoder) {
         if(value == null){
             throw new IllegalArgumentException("회의자의 비밀번호를 입력해주세요.");
         }
-        this.value = value;
+        this.value = passwordEncoder.encode(value);
     }
 
-    public static Password of(String password){
-        return new Password(password);
+    public static Password of(String password, PasswordEncoder passwordEncoder){
+        return new Password(password, passwordEncoder);
     }
 
     @Override

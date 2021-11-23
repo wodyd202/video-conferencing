@@ -8,6 +8,7 @@ import com.ljy.videoclass.services.panelist.domain.PanelistFixture;
 import com.ljy.videoclass.services.panelist.domain.value.Email;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,7 +17,9 @@ import static com.ljy.videoclass.services.panelist.domain.PanelistFixture.aPanel
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+/**
+ * 회의자 API 테스트
+ */
 @AutoConfigureMockMvc
 public class PanelistAPI_Test extends PanelistAPITest {
     @Autowired
@@ -26,7 +29,41 @@ public class PanelistAPI_Test extends PanelistAPITest {
     ObjectMapper objectMapper;
 
     @Test
-    void 회의자_등록() throws Exception{
+    void 회의자_등록시_비밀번호를_입력하지_않으면_400_에러_반환() throws Exception {
+        // given
+        SignUpPanalist signUpPanalist = SignUpPanalist.builder()
+                .email("email@google.com")
+                .password("")
+                .build();
+
+        // when
+        mockMvc.perform(post("/api/panelist")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(signUpPanalist)))
+
+        // then
+        .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 회의자_등록시_이메일을_입력하지_않으면_400_에러_반환() throws Exception {
+        // given
+        SignUpPanalist signUpPanalist = SignUpPanalist.builder()
+                .email("")
+                .password("password")
+                .build();
+
+        // when
+        mockMvc.perform(post("/api/panelist")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(signUpPanalist)))
+
+        // then
+        .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 존재하지_않는_이메일로_회의자_등록() throws Exception{
         // given
         SignUpPanalist signUpPanalist = SignUpPanalist.builder()
                 .email("signUpApi@google.com")

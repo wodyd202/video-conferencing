@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.domain.AbstractAggregateRoot;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 

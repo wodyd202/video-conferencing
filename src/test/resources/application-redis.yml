@@ -5,5 +5,5 @@ spring:
     timeout: 3000
 
 redis:
-  chat-message:
-    key: video-class:classroom:chat-message
+  key:
+    panelist: "video-class:panelist"
