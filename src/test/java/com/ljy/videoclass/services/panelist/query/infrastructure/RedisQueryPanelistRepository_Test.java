@@ -24,7 +24,7 @@ public class RedisQueryPanelistRepository_Test {
 
         // when
         panelistRepository.save(panelistModel);
-        Optional<PanelistModel> panelistModelOptional = panelistRepository.findById(panelistModel.getEmail());
+        Optional<PanelistModel> panelistModelOptional = panelistRepository.findById(panelistModel.getId());
 
         // then
         assertTrue(panelistModelOptional.isPresent());

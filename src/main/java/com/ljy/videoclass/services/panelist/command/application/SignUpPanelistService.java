@@ -1,12 +1,11 @@
 package com.ljy.videoclass.services.panelist.command.application;
 
-import com.ljy.videoclass.services.classroom.command.application.PanelistMapper;
-import com.ljy.videoclass.services.classroom.command.application.model.SignUpPanalist;
+import com.ljy.videoclass.services.panelist.command.model.SignUpPanalist;
 import com.ljy.videoclass.services.panelist.domain.Panelist;
 import com.ljy.videoclass.services.panelist.domain.PanelistRepository;
 import com.ljy.videoclass.services.panelist.domain.exception.AlreadyExistPanelistException;
 import com.ljy.videoclass.services.panelist.domain.model.PanelistModel;
-import com.ljy.videoclass.services.panelist.domain.value.Email;
+import com.ljy.videoclass.services.panelist.domain.value.PanelistId;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,7 +38,7 @@ public class SignUpPanelistService {
     }
 
     private void verifyNotExistPanelist(SignUpPanalist signUpPanalist){
-        if(panelistRepository.findById(Email.of(signUpPanalist.getEmail())).isPresent()){
+        if(panelistRepository.findById(PanelistId.of(signUpPanalist.getId())).isPresent()){
             throw new AlreadyExistPanelistException();
         }
     }

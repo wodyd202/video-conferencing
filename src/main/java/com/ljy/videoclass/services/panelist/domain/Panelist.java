@@ -1,9 +1,9 @@
 package com.ljy.videoclass.services.panelist.domain;
 
 
-import com.ljy.videoclass.services.panelist.domain.event.SignUpedPanelist;
+import com.ljy.videoclass.services.panelist.domain.event.SignUpedPanelistEvent;
 import com.ljy.videoclass.services.panelist.domain.model.PanelistModel;
-import com.ljy.videoclass.services.panelist.domain.value.Email;
+import com.ljy.videoclass.services.panelist.domain.value.PanelistId;
 import com.ljy.videoclass.services.panelist.domain.value.ExpellCount;
 import com.ljy.videoclass.services.panelist.domain.value.PanelistStatus;
 import com.ljy.videoclass.services.panelist.domain.value.Password;
@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.domain.AbstractAggregateRoot;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 
@@ -25,19 +24,15 @@ import static javax.persistence.EnumType.STRING;
 @Table(name = "panelist")
 @DynamicUpdate
 public class Panelist extends AbstractAggregateRoot<Panelist> {
-    // 이메일
+    // 아이디
     @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "email", length = 50))
-    private Email email;
+    @AttributeOverride(name = "value", column = @Column(name = "id", length = 15))
+    private PanelistId id;
 
     // 비밀번호
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "password", length = 100, nullable = false))
     private Password password;
-
-    // 이메일 인증 상태
-    @Column(nullable = false, length = 5)
-    private boolean auth;
 
     // 추방 횟수
     @Embedded
@@ -53,26 +48,24 @@ public class Panelist extends AbstractAggregateRoot<Panelist> {
     protected Panelist(){}
 
     @Builder
-    public Panelist(Email email, Password password) {
-        setEmail(email);
+    public Panelist(PanelistId id, Password password) {
+        setId(id);
         setPassword(password);
         expellCount = ExpellCount.getInstance();
-        this.auth = false;
         this.status = PanelistStatus.ACTIVE;
-        registerEvent(SignUpedPanelist.builder()
-                .auth(auth)
-                .email(email)
+        registerEvent(SignUpedPanelistEvent.builder()
+                .id(id)
                 .expellCount(expellCount)
                 .password(password)
                 .status(status)
                 .build());
     }
 
-    private void setEmail(Email email) {
-        if(email == null){
-            throw new IllegalArgumentException("회의자의 이메일을 입력해주세요.");
+    private void setId(PanelistId panelistId) {
+        if(panelistId == null){
+            throw new IllegalArgumentException("회의자의 아이디를 입력해주세요.");
         }
-        this.email = email;
+        this.id = panelistId;
     }
 
     private void setPassword(Password password) {
@@ -87,13 +80,13 @@ public class Panelist extends AbstractAggregateRoot<Panelist> {
      */
     public void expell() {
         expellCount.increment();
-        log.info("expell panelist : {}", email);
+        log.info("expell panelist : {}", id);
 
         // 추방 횟수가 5회가 된 경우 계정 비활성화함
         if(expellCount.isMaxium()){
             expellCount = ExpellCount.getInstance();
             status = PanelistStatus.DE_ACTIVE;
-            log.info("de active panelist : {}", email);
+            log.info("de active panelist : {}", id);
         }
     }
 
@@ -102,14 +95,13 @@ public class Panelist extends AbstractAggregateRoot<Panelist> {
      */
     public void activation() {
         status = PanelistStatus.ACTIVE;
-        log.info("active panelist : {}", email);
+        log.info("active panelist : {}", id);
     }
 
     // to model
     public PanelistModel toModel() {
         return PanelistModel.builder()
-                .email(email)
-                .auth(auth)
+                .id(id)
                 .status(status)
                 .expellCount(expellCount)
                 .build();
@@ -118,9 +110,8 @@ public class Panelist extends AbstractAggregateRoot<Panelist> {
     @Override
     public String toString() {
         return "Panelist{" +
-                "email=" + email +
+                "id=" + id +
                 ", password=" + password +
-                ", auth=" + auth +
                 ", expellCount=" + expellCount +
                 ", status=" + status +
                 '}';

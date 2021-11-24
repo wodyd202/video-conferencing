@@ -1,8 +1,7 @@
 package com.ljy.videoclass.services.panelist.command.infrastructure;
 
-import com.ljy.videoclass.services.classroom.command.infrastructure.QuerydslPanelistRepository;
 import com.ljy.videoclass.services.panelist.domain.Panelist;
-import com.ljy.videoclass.services.panelist.domain.value.Email;
+import com.ljy.videoclass.services.panelist.domain.value.PanelistId;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,10 +20,10 @@ public class QuerydslPanelistRepository_Test {
     @Test
     void findById(){
         // given
-        querydslPanelistRepository.save(aPanelist().email(Email.of("test@google.com")).build());
+        querydslPanelistRepository.save(aPanelist().id(PanelistId.of("persistPanelist")).build());
 
         // when
-        Optional<Panelist> panelistOptional = querydslPanelistRepository.findById(Email.of("test@google.com"));
+        Optional<Panelist> panelistOptional = querydslPanelistRepository.findById(PanelistId.of("persistPanelist"));
 
         // then
         assertTrue(panelistOptional.isPresent());

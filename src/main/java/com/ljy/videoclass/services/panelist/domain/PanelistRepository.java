@@ -1,11 +1,10 @@
 package com.ljy.videoclass.services.panelist.domain;
 
-import com.ljy.videoclass.services.panelist.domain.value.Email;
-import com.ljy.videoclass.services.panelist.domain.Panelist;
+import com.ljy.videoclass.services.panelist.domain.value.PanelistId;
 
 import java.util.Optional;
 
 public interface PanelistRepository {
-    Optional<Panelist> findById(Email email);
+    Optional<Panelist> findById(PanelistId email);
     void save(Panelist panelist);
 }

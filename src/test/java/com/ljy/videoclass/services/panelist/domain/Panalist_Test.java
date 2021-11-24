@@ -1,9 +1,9 @@
 package com.ljy.videoclass.services.panelist.domain;
 
-import com.ljy.videoclass.services.classroom.command.application.PanelistMapper;
-import com.ljy.videoclass.services.classroom.command.application.model.SignUpPanalist;
+import com.ljy.videoclass.services.panelist.command.application.PanelistMapper;
+import com.ljy.videoclass.services.panelist.command.model.SignUpPanalist;
 import com.ljy.videoclass.services.panelist.domain.model.PanelistModel;
-import com.ljy.videoclass.services.panelist.domain.value.Email;
+import com.ljy.videoclass.services.panelist.domain.value.PanelistId;
 import com.ljy.videoclass.services.panelist.domain.value.Password;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,14 +23,13 @@ public class Panalist_Test {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "invalid",
-            "invalid@invalid",
-            "이메일@google.com"
+            "@panelistId",
+            "유효하지 않음"
     })
-    void 회의자_아이디는_이메일_형식을_지켜야함(String email){
+    void 회의자_아이디는_영어및숫자조합만_허용함(String panelistId){
         // when
         assertThrows(IllegalArgumentException.class, ()->{
-            Email.of(email);
+            PanelistId.of(panelistId);
         });
     }
 
@@ -40,7 +39,7 @@ public class Panalist_Test {
     void 회의자_생성(){
         // given
         Panelist panelist = Panelist.builder()
-                .email(Email.of("test@google.com"))
+                .id(PanelistId.of("testId"))
                 .password(Password.of("password", mock(PasswordEncoder.class)))
                 .build();
 
@@ -48,8 +47,7 @@ public class Panalist_Test {
         PanelistModel panalistModel = panelist.toModel();
 
         // then
-        assertEquals(panalistModel.getEmail(), "test@google.com");
-        assertFalse(panalistModel.isAuth());
+        assertEquals(panalistModel.getId(), "testId");
     }
 
     // 회의자 생성 요청을 받는다.
@@ -60,7 +58,7 @@ public class Panalist_Test {
         // given
         // 생성 요청
         SignUpPanalist signUpPanalist = SignUpPanalist.builder()
-                .email("test@google.com")
+                .id("testId")
                 .password("password")
                 .build();
 
@@ -71,7 +69,7 @@ public class Panalist_Test {
         PanelistModel panalistModel = panelist.toModel();
 
         // then
-        assertEquals(panalistModel.getEmail(), "test@google.com");
+        assertEquals(panalistModel.getId(), "testId");
     }
 
     // 추방 당할 경우 추방 카운트를 1씩 증가시킨다.

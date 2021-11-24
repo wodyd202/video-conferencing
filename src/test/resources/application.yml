@@ -1,4 +1,4 @@
 spring:
   profiles:
     active: test
-    include: oauth, view, database, ssl, redis
+    include: database, redis

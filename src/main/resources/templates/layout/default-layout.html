@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
+<head>
+    <meta charset="UTF-8">
+    <th:block th:replace="fragment/config :: configFragment">
+    </th:block>
+</head>
+<body class="d-flex flex-column h-100">
+<main class="mt-5">
+    <th:block layout:fragment="content">
+    </th:block>
+</main>
+<div class="modal fade" id="msgBox" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"  aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body" id="msgBoxContent">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger btn-sm" data-bs-target="#msgBox" data-bs-toggle="modal" id="msgBoxYesBtn">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirmBox" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"  aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body" id="confirmBoxContent">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success btn-sm" id="confirmBoxYesBtn">예</button>
+                <button class="btn btn-danger btn-sm" data-bs-target="#confirmBox" data-bs-toggle="modal">아니오</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const msgBox = new bootstrap.Modal(document.getElementById("msgBox"), {});
+    const msgBoxContent = document.getElementById('msgBoxContent');
+    const msgBoxYesBtn = document.getElementById('msgBoxYesBtn');
+
+    const confirmBox = new bootstrap.Modal(document.getElementById("confirmBox"), {});
+    const confirmBoxContent = document.getElementById('confirmBoxContent');
+    const confirmBoxYesBtn = document.getElementById('confirmBoxYesBtn');
+
+    const progressBar = document.getElementById('progress');
+    const progressMain = document.getElementById('progressMain');
+
+    function progress(percent,time, callback){
+        progressMain.style.display = '';
+        progressBar.style.width = `${percent}%`;
+        setTimeout(callback,time);
+    }
+
+    function showMessage(message, callback){
+        msgBoxContent.innerText = message;
+        msgBoxYesBtn.addEventListener('click',()=>{
+           callback();
+        });
+        msgBox.show();
+    }
+
+    function showConfirmMessage(message, callback){
+        confirmBoxContent.innerText = message;
+        confirmBoxYesBtn.addEventListener('click',()=>{
+            confirmBox.hide();
+            callback();
+        });
+        confirmBox.show();
+    }
+
+    function selectControll(dom, value){
+        for(let i =0;i<dom.length;i++){
+            if(value === dom[i].value){
+                dom[i].selected = true;
+            }
+        }
+    }
+
+    function radioControll(dom, value){
+        dom.forEach(node=>{
+            if(node.value === value){
+                node.checked = true;
+            }
+        });
+    }
+
+    function getQueryStringObject() {
+        var a = window.location.search.substr(1).split('&');
+        if (a == "") return {};
+        var b = {};
+        for (var i = 0; i < a.length; ++i) {
+            var p = a[i].split('=', 2);
+            if (p.length == 1)
+                b[p[0]] = "";
+            else
+                b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+        }
+        return b;
+    }
+</script>
+<th:block layout:fragment="scripts">
+</th:block>
+</body>
+</html>

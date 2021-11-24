@@ -1,0 +1,55 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default-layout">
+<th:block layout:fragment="css">
+    <style>
+
+    </style>
+</th:block>
+<div layout:fragment="content">
+    <div class="container row mt-5">
+        <div class="col-4"></div>
+        <div class="card p-5 col-5 text-center">
+            <h2>회의자 등록</h2>
+            <div>
+                <div class="mb-3 mt-3">
+                    <input type="text" class="form-control" id="panelistId" placeholder="사용할 아이디를 입력해주세요.">
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="password" placeholder="사용할 비밀번호를 입력해주세요.">
+                </div>
+                <hr>
+                <button id="signUpBtn" style="width: 100%;" type="button" class="btn btn-warning mb-3">등록</button>
+                <a href="./login">회의자 아이디가 존재합니다.</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div layout:fragment="scripts">
+    <script>
+        document.getElementById('signUpBtn').addEventListener('click', ()=>{
+            showConfirmMessage("정말 입력한 대로 회의자를 등록하시겠습니까?", ()=>{
+                const panelist = {
+                    id : document.getElementById('panelistId').value.trim(),
+                    password : document.getElementById('password').value.trim()
+                };
+                $.ajax({
+                    method: "post",
+                    url : "./api/panelist",
+                    contentType : "application/json",
+                    data : JSON.stringify(panelist),
+                    success : function(res){
+                        showMessage("회의자 등록 완료", ()=>{
+                            location.href = './login';
+                        })
+                    },
+                    error : function(res){
+                        showMessage(res.responseText, ()=>{})
+                    }
+                })
+            });
+        });
+    </script>
+</div>
+</html>

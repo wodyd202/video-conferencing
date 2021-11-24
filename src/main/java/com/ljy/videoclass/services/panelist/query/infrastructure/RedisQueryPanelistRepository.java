@@ -26,11 +26,11 @@ public class RedisQueryPanelistRepository {
     }
 
     public void save(PanelistModel panelistModel){
-        hashOperations.put(PANELIST_KEY, panelistModel.getEmail(), panelistModel);
+        hashOperations.put(PANELIST_KEY, panelistModel.getId(), panelistModel);
     }
 
-    public Optional<PanelistModel> findById(String email){
-        Object obj = hashOperations.get(PANELIST_KEY, email);
+    public Optional<PanelistModel> findById(String id){
+        Object obj = hashOperations.get(PANELIST_KEY, id);
         if(obj != null){
             return Optional.of(objectMapper.convertValue(obj, PanelistModel.class));
         }

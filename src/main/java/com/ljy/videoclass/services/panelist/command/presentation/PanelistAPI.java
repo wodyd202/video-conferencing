@@ -1,6 +1,6 @@
 package com.ljy.videoclass.services.panelist.command.presentation;
 
-import com.ljy.videoclass.services.classroom.command.application.model.SignUpPanalist;
+import com.ljy.videoclass.services.panelist.command.model.SignUpPanalist;
 import com.ljy.videoclass.services.panelist.command.application.SignUpPanelistService;
 import com.ljy.videoclass.services.panelist.domain.model.PanelistModel;
 import lombok.AllArgsConstructor;

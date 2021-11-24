@@ -1,8 +1,7 @@
-const HOST = "192.168.45.163";
-const PORT = 8443;
+const HOST = location.host;
 const QUERY_STRING = getQueryStringObject();
 const CODE = QUERY_STRING.code;
-const MAPPING = "/class";
+const MAPPING = "/conference";
 const peerConnectionConfig = {
     'iceServers': [
         {'urls': 'stun:stun.l.google.com:19302'}
@@ -100,7 +99,7 @@ sendBtn.addEventListener('click', ()=>{
 
 // 회의에서 나가기
 document.getElementById('exitBtn').addEventListener('click', ()=>{
-    location.href = './class-list';
+    location.href = './main';
 });
 
 // 설정
@@ -133,10 +132,12 @@ shareScreen.addEventListener('click', ()=>{
         audio: micFlag,
         video: cameraFlag
     }).then(function(stream){
+        const screenTrack = stream.getVideoTracks()[0];
         for(let uuid in connections){
-            connections[uuid].getSenders().forEach(sender => {
-                sender.replaceTrack(stream.getVideoTracks()[0]);
-            })
+            let senders = connections[uuid].getSenders().find(s=>{
+                return s.track.kind == screenTrack.kind;
+            });
+            senders.replaceTrack(screenTrack);
         }
         shareScreen.style.display = 'none';
         originScreen.style.display = 'block';
@@ -150,10 +151,12 @@ originScreen.addEventListener('click', ()=>{
         audio: micFlag,
         video: cameraFlag
     }).then(function(stream){
+        const videoTrack = stream.getVideoTracks()[0];
         for(let uuid in connections){
-            connections[uuid].getSenders().forEach(sender => {
-                sender.replaceTrack(stream.getVideoTracks()[0]);
-            })
+            let senders = connections[uuid].getSenders().find(s=>{
+                return s.track.kind == videoTrack.kind;
+            });
+            senders.replaceTrack(videoTrack);
         }
         shareScreen.style.display = 'block';
         originScreen.style.display = 'none';
@@ -163,27 +166,40 @@ originScreen.addEventListener('click', ()=>{
 });
 
 function init(code) {
-    navigator.mediaDevices.getUserMedia({video: true, audio: true})
-        .then(function (stream) {
-        console.log("Stream OK");
-        localStream = stream;
-        selfView.srcObject = stream;
-        localStream.getVideoTracks()[0].enabled = cameraFlag;
-        localStream.getAudioTracks()[0].enabled = micFlag;
-        document.getElementById('camera').checked = cameraFlag;
-        document.getElementById('mic').checked = micFlag;
-        selfView.addEventListener('click', ()=>{
-            container.style.display = 'none';
-            bigSizeVideoContainer.style.display = 'block';
-            bigSizeVideo.srcObject = stream;
-        });
-        ws = new WebSocket('wss://' + HOST + ':' + PORT + MAPPING + "/" + code);
-        ws.onmessage = processWsMessage;
-        ws.onopen = logMessage;
-        ws.onclose = logMessage;
-        ws.onerror = logMessage;
-    }).catch(function (error) {
-        console.log("Stream NOT OK: " + error.name + ': ' + error.message);
+    $.ajax({
+        url : "/api/conference/" + CODE,
+        success : function(res){
+            document.getElementById('conferenceCode').innerText = res.code;
+            document.getElementById('conferenceLimitCount').innerText = res.limitCount;
+            document.getElementById('conferenceDate').innerText = res.createDateTime;
+            document.getElementById('conferenceCreator').innerText = res.creator;
+            navigator.mediaDevices.getUserMedia({video: true, audio: true})
+                .then(function (stream) {
+                    console.log("Stream OK");
+                    localStream = stream;
+                    selfView.srcObject = stream;
+                    localStream.getVideoTracks()[0].enabled = cameraFlag;
+                    localStream.getAudioTracks()[0].enabled = micFlag;
+                    document.getElementById('camera').checked = cameraFlag;
+                    document.getElementById('mic').checked = micFlag;
+                    selfView.addEventListener('click', ()=>{
+                        container.style.display = 'none';
+                        bigSizeVideoContainer.style.display = 'block';
+                        bigSizeVideo.srcObject = stream;
+                    });
+                    ws = new WebSocket('wss://' + HOST + MAPPING + "/" + code);
+                    ws.onmessage = processWsMessage;
+                    ws.onopen = logMessage;
+                    ws.onclose = logMessage;
+                    ws.onerror = logMessage;
+                }).catch(function (error) {
+                console.log("Stream NOT OK: " + error.name + ': ' + error.message);
+            });
+        },
+        error : function(res){
+            alert('회의 정보가 존재하지 않습니다.');
+            location.href = '/main';
+        }
     });
 }
 
@@ -421,7 +437,7 @@ function getRTCPeerConnectionObject(userId) {
 }
 
 function sendMessage(payload) {
-    payload.roomId = CODE;
+    payload.conferenceCode = CODE;
     ws.send(JSON.stringify(payload));
 }
 

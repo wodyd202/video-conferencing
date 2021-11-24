@@ -12,10 +12,10 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Configuration
 @EnableWebSocket
 public class WebSocketsConfiguration implements WebSocketConfigurer {
-    @Autowired private TextWebSocketHandler signalingsockethandler;
+    @Autowired private TextWebSocketHandler conferenceSocketHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        webSocketHandlerRegistry.addHandler(signalingsockethandler,"/class/**");
+        webSocketHandlerRegistry.addHandler(conferenceSocketHandler,"/conference/**");
     }
 }

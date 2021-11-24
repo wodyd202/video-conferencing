@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default-layout">
+<th:block layout:fragment="css">
+    <style>
+
+    </style>
+</th:block>
+<div layout:fragment="content">
+    <div class="container row mt-5">
+        <div class="col-4"></div>
+        <div class="card p-5 col-5 text-center">
+            <h2>로그인</h2>
+            <form th:action="@{/login}"  method='post'>
+                <div class="mb-3 mt-3">
+                    <input type="text" class="form-control" id="panelistId" placeholder="아이디를 입력해주세요." name="username">
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="pwd" placeholder="비밀번호를 입력해주세요." name="password">
+                </div>
+                <hr>
+                <button style="width: 100%;" type="submit" class="btn btn-success mb-3">로그인</button>
+                <a href="/sign-up">아직 회의자 등록을 하지 않으셨나요?</a>
+            </form>
+        </div>
+    </div>
+</div>
+<div layout:fragment="scripts">
+    <script>
+        const error = getQueryStringObject()['error'];
+        if(error !== undefined){
+            showMessage("아이디 혹은 비밀번호가 일치하지 않습니다.", ()=>{});
+        }
+    </script>
+</div>
+</html>
+

@@ -7,3 +7,5 @@ spring:
 redis:
   key:
     panelist: "video-class:panelist"
+    conference: "video-class:conference"
+    chat-message: "video-class:chat-message"
