@@ -31,6 +31,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.sessionManagement()
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false);
+
         http.headers().frameOptions().disable();
 
         http.csrf().disable();
@@ -39,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // view
                 // panelist
                 .antMatchers(HttpMethod.GET, "/login").permitAll()
+                .antMatchers(HttpMethod.GET, "/test").authenticated()
                 .antMatchers(HttpMethod.GET, "/sign-up").permitAll()
 
                 // main

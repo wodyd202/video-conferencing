@@ -117,6 +117,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+
+        <!-- Kurento -->
+        <dependency>
+            <groupId>org.kurento</groupId>
+            <artifactId>kurento-client</artifactId>
+            <version>6.16.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kurento</groupId>
+            <artifactId>kurento-utils-js</artifactId>
+            <version>6.15.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

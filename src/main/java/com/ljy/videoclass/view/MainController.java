@@ -25,5 +25,4 @@ public class MainController {
     public String conference(){
         return "conference";
     }
-
 }

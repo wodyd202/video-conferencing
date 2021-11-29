@@ -1,0 +1,14 @@
+package com.ljy.videoclass.services.conferenceHistory.domain;
+
+import com.ljy.videoclass.services.conferenceHistory.domain.value.ConferenceCode;
+import com.ljy.videoclass.services.conferenceHistory.domain.value.ConferenceTitle;
+import com.ljy.videoclass.services.conferenceHistory.domain.value.LimitCount;
+
+public class ConferenceFixture {
+    public static Conference.ConferenceBuilder aConference() {
+        return Conference.builder()
+                .code(ConferenceCode.of("code"))
+                .title(ConferenceTitle.of("회의실 제목"))
+                .limitCount(LimitCount.of(2));
+    }
+}

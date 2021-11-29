@@ -4,7 +4,6 @@
       layout:decorator="layout/default-layout">
 <th:block layout:fragment="css">
     <style>
-
     </style>
 </th:block>
 <div layout:fragment="content">
@@ -13,8 +12,24 @@
             <div class="col-6 p-5 text-center card" style="left: -10px; cursor: pointer" data-bs-toggle="modal" data-bs-target="#openConferenceModal">
                 <h2><i class="bi bi-plus-square-fill"></i></h2><h4>회의 개설</h4>
             </div>
-            <div class="col-6 p-5 text-center card" style="left: 10px; cursor: pointer;">
+            <div class="col-6 p-5 text-center card" style="left: 10px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#conferenceEnterModal">
                 <h2><i class="bi bi-box-arrow-in-right"></i></h2><h4>코드로 회의 참여</h4>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="conferenceEnterModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="mb-3 mt-3">
+                        <label for="code" class="form-label">회의 코드 :</label>
+                        <input type="text" class="form-control" id="code" placeholder="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="conferenceEnterBtn" class="btn btn-primary">입장</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
+                </div>
             </div>
         </div>
     </div>
@@ -22,14 +37,10 @@
     <div class="modal fade" id="openConferenceModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-
-                <!-- Modal Header -->
                 <div class="modal-header">
                     <h5 class="modal-title">회의 개설</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
-                <!-- Modal body -->
                 <div class="modal-body">
                     <div>
                         <div class="mb-3 mt-3">
@@ -42,19 +53,25 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Modal footer -->
                 <div class="modal-footer">
                     <button id="openConferenceBtn" type="button" class="btn btn-success">회의 개최</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 <div layout:fragment="scripts">
     <script>
+        document.getElementById('conferenceEnterBtn').addEventListener('click', ()=>{
+            const code = document.getElementById('code').value.trim();
+            if(code === ''){
+                showMessage("회의 코드를 입력해주세요.", ()=>{});
+                return;
+            }
+            location.href = '/conference?code=' + code;
+        });
+
         document.getElementById('openConferenceBtn').addEventListener('click', ()=>{
            showConfirmMessage('정말 위 사항대로 회의를 개최하시겠습니까?', ()=>{
                $.ajax({
