@@ -2,7 +2,6 @@ let ws;
 let participants = {};
 const QUERY_STRING = getQueryStringObject();
 const CONFERENCE_CODE = QUERY_STRING.code;
-const container = document.getElementById("remoteVideosContainer");
 
 const currentPanelistId = document.getElementById('currentPanelistId').value;
 
@@ -38,6 +37,9 @@ function init(code){
 				parsedMessage.messages.forEach(message=>printChatMessage(message.sender, message.message, message.sender === currentPanelistId));
 				break;
 			case "chat":
+				if(parsedMessage.sender !== currentPanelistId && !chatFlag){
+					showAlram('chat', parsedMessage.sender, parsedMessage.sender + "님의 메시지를 확인해주세요.");
+				}
 				printChatMessage(parsedMessage.sender, parsedMessage.message, parsedMessage.sender === currentPanelistId);
 				break;
 			case "shake":
@@ -60,13 +62,6 @@ function init(code){
 		}
 	}
 }
-
-// 전체화면 해제
-bigSizeVideo.addEventListener('click', ()=>{
-	bigSizeVideo.srcObject = null;
-	bigSizeVideoContainer.style.display = 'none';
-	container.style.display = 'block';
-});
 
 // 화면 공유
 shareScreen.addEventListener('click', ()=>{
@@ -198,6 +193,7 @@ function showAlram(type, panelistId, message){
 
 function onNewParticipant(request) {
 	receiveVideo(request.name);
+	showAlram('chat', request.name, request.name + "님이 입장했습니다.");
 }
 
 function receiveVideoResponse(result) {
@@ -273,6 +269,7 @@ function onParticipantLeft(request) {
 	document.getElementById('joinerCount').innerText = parseInt(document.getElementById('joinerCount').innerText) - 1;
 	participant.dispose();
 	delete participants[request.name];
+	showAlram('chat', request.name, request.name + "님이 퇴장했습니다.");
 }
 
 function sendMessage(message) {
