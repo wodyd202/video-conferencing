@@ -26,7 +26,7 @@ import static javax.persistence.EnumType.STRING;
 public class Panelist extends AbstractAggregateRoot<Panelist> {
     // 아이디
     @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "id", length = 15))
+    @AttributeOverride(name = "value", column = @Column(name = "id", length = 15, nullable = false))
     private PanelistId id;
 
     // 비밀번호
@@ -79,7 +79,7 @@ public class Panelist extends AbstractAggregateRoot<Panelist> {
      * 추방
      */
     public void expell() {
-        expellCount.increment();
+        expellCount = expellCount.increment();
         log.info("expell panelist : {}", id);
 
         // 추방 횟수가 5회가 된 경우 계정 비활성화함
@@ -116,4 +116,6 @@ public class Panelist extends AbstractAggregateRoot<Panelist> {
                 ", status=" + status +
                 '}';
     }
+
+
 }

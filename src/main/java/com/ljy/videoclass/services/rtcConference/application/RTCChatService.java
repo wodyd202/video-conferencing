@@ -60,7 +60,6 @@ public class RTCChatService {
      */
     public void persist(ConferenceCode conferenceCode, ChatMessage chatMessage) {
         chatMessageRepository.save(conferenceCode, chatMessage);
-        log.info("save chat message into redis : {}", chatMessage);
 
         if(isOverMessageCount(conferenceCode)){
             List<ChatMessage> chatMessages = chatMessageRepository.remove(conferenceCode, 60);

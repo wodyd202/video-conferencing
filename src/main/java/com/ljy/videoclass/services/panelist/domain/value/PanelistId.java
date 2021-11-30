@@ -33,8 +33,8 @@ public class PanelistId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PanelistId email = (PanelistId) o;
-        return Objects.equals(value, email.value);
+        PanelistId that = (PanelistId) o;
+        return Objects.equals(value, that.value);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class PanelistId implements Serializable {
 
     @Override
     public String toString() {
-        return "Email{" +
+        return "PanelistId{" +
                 "value='" + value + '\'' +
                 '}';
     }

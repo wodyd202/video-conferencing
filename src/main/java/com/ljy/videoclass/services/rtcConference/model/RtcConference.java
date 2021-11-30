@@ -3,12 +3,16 @@ package com.ljy.videoclass.services.rtcConference.model;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.ljy.videoclass.services.rtcConference.application.util.SimplePermissionValidator;
+import com.ljy.videoclass.services.rtcConference.application.exception.NotMatchKeyException;
 import lombok.extern.slf4j.Slf4j;
 import org.kurento.client.MediaPipeline;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.Closeable;
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -16,23 +20,39 @@ import java.util.concurrent.ConcurrentMap;
 public class RtcConference implements Closeable {
     private PanelistId creatorId;
     private ConferenceCode code;
+    private ConferenceKey key;
     private LocalDateTime createDateTime;
 
     private ConcurrentMap<PanelistId, RtcPanelist> joinPanelists = new ConcurrentHashMap<>();
     private MediaPipeline pipeline;
 
+    private boolean isNew;
+
     public RtcConference(PanelistId creator, ConferenceCode code, MediaPipeline pipeline) {
         this.creatorId = creator;
         this.code = code;
+        this.key = createKey();
         this.createDateTime = LocalDateTime.now();
         this.pipeline = pipeline;
+        this.isNew = true;
+    }
+
+    private ConferenceKey createKey() {
+        return ConferenceKey.of(UUID.randomUUID().toString().substring(0,8));
     }
 
     /**
+     * @param permissionValidator
      * @param joiner 참여자
-     * # 회의 참여
      */
-    public void join(RtcPanelist joiner){
+    public void join(PermissionValidator permissionValidator, RtcPanelist joiner, ConferenceKey key) throws NotMatchKeyException {
+        permissionValidator.validation(joiner.getPanelistId());
+        // 이미 존재하던 회의일 경우
+        if(!isNew){
+            if(!matchKey(key)){
+                throw new NotMatchKeyException();
+            }
+        }
         final JsonObject newParticipantMsg = createNewParticipantMsg(joiner);
 
         // 기존 회의자들에게 메시지 보내고 기존 회의자 목록 가져옴
@@ -50,6 +70,11 @@ public class RtcConference implements Closeable {
 
         // 회의실 입장
         joinPanelists.put(joiner.getPanelistId(), joiner);
+        isNew = false;
+    }
+
+    private boolean matchKey(ConferenceKey key) {
+        return this.key.equals(key);
     }
 
     private JsonObject createNewParticipantMsg(RtcPanelist joiner){
@@ -66,7 +91,8 @@ public class RtcConference implements Closeable {
     private JsonObject createConferenceInfoMsg(){
         final JsonObject conferenceInfoMsg = new JsonObject();
         conferenceInfoMsg.addProperty("id", "conferenceInfo");
-        conferenceInfoMsg.addProperty("cod", code.get());
+        conferenceInfoMsg.addProperty("code", code.get());
+        conferenceInfoMsg.addProperty("key", key.get());
         conferenceInfoMsg.addProperty("creator", creatorId.get());
         conferenceInfoMsg.addProperty("createDateTime", createDateTime.toString());
         return conferenceInfoMsg;
@@ -102,6 +128,42 @@ public class RtcConference implements Closeable {
         }
 
         panelist.close();
+
+        // 회의장이 나간 경우 다음 사람에게 회의장 인계
+        if(existAnyJoiner() && isCreatorLeave(panelist)){
+            PanelistId panelistId = passCreatorRole();
+            noticeAll(createPassCreatorRoleJson(panelistId));
+        }
+    }
+
+    private boolean existAnyJoiner() {
+        return !joinPanelists.isEmpty();
+    }
+
+    private boolean isCreatorLeave(RtcPanelist panelist) {
+        return creatorId.equals(panelist.getPanelistId());
+    }
+
+    private PanelistId passCreatorRole() {
+        Set<PanelistId> joinerListSet = joinPanelists.keySet();
+        for (PanelistId panelistId : joinerListSet) {
+            RtcPanelist rtcPanelist = joinPanelists.get(panelistId);
+            changeCreator(rtcPanelist);
+            return rtcPanelist.getPanelistId();
+        }
+        return null;
+    }
+
+    private JsonObject createPassCreatorRoleJson(PanelistId panelistId){
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", "passCreatorRole");
+        jsonObject.addProperty("to", panelistId.get());
+        return jsonObject;
+    }
+
+    private void changeCreator(RtcPanelist rtcPanelist) {
+        log.info("change creator {} to {}", creatorId, rtcPanelist.getPanelistId());
+        creatorId = rtcPanelist.getPanelistId();
     }
 
     private JsonObject createParticipantLeftMsg(RtcPanelist panelist){

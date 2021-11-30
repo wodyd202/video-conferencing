@@ -7,12 +7,11 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class OveredMessageCountEvent {
-    private String conferenceCode;
+public class OveredMessageCountEvent extends ConferenceEvent {
     private List<ChatMessage> chatMessages;
 
     public OveredMessageCountEvent(ConferenceCode conferenceCode, List<ChatMessage> chatMessages) {
-        this.conferenceCode = conferenceCode.get();
+        super(conferenceCode.get());
         this.chatMessages = chatMessages;
     }
 }

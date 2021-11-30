@@ -7,19 +7,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
 @Transactional
 abstract public class AbstractHibernateRepository<T extends AbstractAggregateRoot> {
     @PersistenceContext
-    private EntityManager entityManager;
+    protected EntityManager entityManager;
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public void beforePersist(T obj){}
-    public void afterPersist(T obj){}
+    protected void beforePersist(T obj){}
+    protected void afterPersist(T obj){}
     public void save(T obj){
         beforePersist(obj);
 

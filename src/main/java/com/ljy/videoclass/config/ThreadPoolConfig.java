@@ -20,13 +20,13 @@ public class ThreadPoolConfig {
         return threadPoolTaskExecutor;
     }
 
-    @Bean(name = "queryConferenceExecutor")
+    @Bean(name = "conferenceHistoryExecutor")
     Executor queryConferenceExecutor(){
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(5);
         threadPoolTaskExecutor.setMaxPoolSize(10);
         threadPoolTaskExecutor.setQueueCapacity(10);
-        threadPoolTaskExecutor.setThreadNamePrefix("queryConferenceExecutor-");
+        threadPoolTaskExecutor.setThreadNamePrefix("conferenceHistoryExecutor-");
         threadPoolTaskExecutor.initialize();
         return threadPoolTaskExecutor;
     }

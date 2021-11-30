@@ -33,4 +33,8 @@ public class ConferenceManager {
     public void remove(RtcConference conference) {
         conferences.remove(conference.getCode());
     }
+
+    public boolean existByCode(ConferenceCode conferenceCode) {
+        return conferences.get(conferenceCode) != null;
+    }
 }

@@ -5,10 +5,10 @@ function Participant(name) {
 	var rtcPeer;
 	video.id = 'video-' + name;
 	video.autoplay = true;
-	video.controls = false;
+	video.controls = true;
 	video.classList.add(currentLayout);
 	video.addEventListener('click', ()=>{
-		video.webkitRequestFullscreen();
+		// video.webkitRequestFullscreen();
 	});
 
 	document.getElementById('remoteVideosContainer').appendChild(video);

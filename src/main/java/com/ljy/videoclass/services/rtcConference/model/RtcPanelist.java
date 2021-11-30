@@ -3,6 +3,7 @@ package com.ljy.videoclass.services.rtcConference.model;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.kurento.client.*;
+import org.kurento.client.internal.server.KurentoServerException;
 import org.kurento.jsonrpc.JsonUtils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -46,7 +47,9 @@ public class RtcPanelist implements Closeable {
 
     public void cancelVideoFrom(RtcPanelist panelist) {
         final WebRtcEndpoint incoming = incomingMedia.remove(panelist.getPanelistId());
-        incoming.release();
+        if(incoming != null){
+            incoming.release();
+        }
     }
 
     public void receiveVideoFrom(RtcPanelist senderPanelist, SdpInfo sdpOffer){

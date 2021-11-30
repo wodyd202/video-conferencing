@@ -7,90 +7,123 @@
     </style>
 </th:block>
 <div layout:fragment="content">
-    <div class="container mt-5">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Video Conferencing</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                </ul>
+                <li class="d-flex">
+                    <a class="nav-link active" aria-current="page" href="./logout">로그아웃</a>
+                </li>
+            </div>
+        </div>
+    </nav>
+    <br>
+    <div class="container">
         <div class="row">
-            <div class="col-6 p-5 text-center card" style="left: -10px; cursor: pointer" data-bs-toggle="modal" data-bs-target="#openConferenceModal">
-                <h2><i class="bi bi-plus-square-fill"></i></h2><h4>회의 개설</h4>
+            <div class="col-md-5 col-sm-12">
+                <div class="col-12 p-5 card" style="height: 100%; background: url('./assets/1608697288145_0.jpeg'); background-repeat: no-repeat; background-size: cover">
+                </div>
             </div>
-            <div class="col-6 p-5 text-center card" style="left: 10px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#conferenceEnterModal">
-                <h2><i class="bi bi-box-arrow-in-right"></i></h2><h4>코드로 회의 참여</h4>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="conferenceEnterModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
+            <div class="col-md-7 col-sm-12">
+                <div class="col-12 p-2 text-white row">
+                    <div class="col-9">
+                        <h6>회의 가능 상태 :<span class="badge bg-success" style="margin-left: 10px;" id="ableConference">회의 진행 가능</span></h6>
+                    </div>
+                    <div class="col-3">
+                        <h6>누적 추방 횟수 :<span class="badge bg-danger" style="margin-left: 10px;" id="expellCount">0</span>회</h6>
+                    </div>
+                </div>
+                <div class="col-12 p-5 card">
+                    <h2><i class="bi bi-plus-square-fill" style="margin-right: 10px;"></i>새로운 회의 개설</h2>
+                    <div style="font-size: 14px;">
+                        클릭 한번으로 간편하게 회의를 개설하여 다른이들을 회의에 초대하세요.<br/>- 회의 개설 시 회의 코드와 회의키(비밀번호)는 <span class="text-primary">자동으로 부여</span>받습니다.
+                        <br>
+                        <span class="text-danger">- 누적 추방 횟수가 5회가 될 시 한달간 회의 개설이 제한됩니다.</span>
+                    </div>
+                    <br>
+                    <button type="button" class="btn btn-outline-success" style="width: 100%;" id="createConferenceBtn">회의 개설</button>
+                </div>
+                <br/>
+                <div class="col-12 p-5 card">
+                    <h2><i class="bi bi-box-arrow-in-right" style="margin-right: 10px;"></i>코드로 회의 참여</h2>
+                    <div style="font-size: 14px;">
+                        - 다른 회의자에게 부여받은 <span class="text-primary">회의 코드와 회의 키</span>를 입력합니다. <br/>
+                        <span class="text-danger">- 누적 추방 횟수가 5회가 될 시 한달간 회의 참여가 제한됩니다.</span>
+                    </div>
                     <div class="mb-3 mt-3">
-                        <label for="code" class="form-label">회의 코드 :</label>
-                        <input type="text" class="form-control" id="code" placeholder="">
+                        <input type="text" class="form-control" id="conferenceCode" placeholder="회의 코드를 입력해주세요.">
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="conferenceEnterBtn" class="btn btn-primary">입장</button>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="conferenceKey" placeholder="회의 키를 입력해주세요.">
+                    </div>
+                    <button type="button" class="btn btn-outline-warning" style="width: 100%;" id="joinConferenceBtn">회의 참여</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="openConferenceModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">회의 개설</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div>
-                        <div class="mb-3 mt-3">
-                            회의 제목 :
-                            <input th:class="mt-3" type="text" id="conferenceTitle">
-                        </div>
-                        <div class="mb-3">
-                            회의 제한 인원 :
-                            <input th:class="mt-3" type="number" class="form-control" id="limitCount" value="2" min="2" max="10">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="openConferenceBtn" type="button" class="btn btn-success">회의 개최</button>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <br>
 </div>
 <div layout:fragment="scripts">
     <script>
-        document.getElementById('conferenceEnterBtn').addEventListener('click', ()=>{
-            const code = document.getElementById('code').value.trim();
-            if(code === ''){
-                showMessage("회의 코드를 입력해주세요.", ()=>{});
-                return;
-            }
-            location.href = '/conference?code=' + code;
+        getPanelistInfo();
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+            document.getElementById('ableConference').innerText = '회의 진행 불가';
+            document.getElementById('ableConference').classList.remove('bg-success');
+            document.getElementById('ableConference').classList.add('bg-danger');
+        }
+
+        document.getElementById('createConferenceBtn').addEventListener('click', ()=>{
+            location.href = './conference?code=' + uuidv4() + "&type=create";
         });
 
-        document.getElementById('openConferenceBtn').addEventListener('click', ()=>{
-           showConfirmMessage('정말 위 사항대로 회의를 개최하시겠습니까?', ()=>{
-               $.ajax({
-                   method: "post",
-                   url: "/api/conference",
-                   contentType: "application/json",
-                   data: JSON.stringify({
-                       title : document.getElementById('conferenceTitle').value.trim(),
-                       limitCount : document.getElementById('limitCount').value,
-                   }),
-                   success : function(res){
-                       location.href = `./conference?code=${res.code}`;
-                   },
-                   error : function(res){
-                       showMessage(res.responseText, ()=>{})
+        document.getElementById('joinConferenceBtn').addEventListener('click', ()=>{
+           const code = document.getElementById('conferenceCode').value.trim();
+           const key = document.getElementById('conferenceKey').value.trim();
+           if(code === ''){
+               showMessage('회의 코드를 입력해주세요.', ()=>{
+                   document.getElementById('conferenceCode').focus();
+               });
+               return;
+           }
+           if(key === ''){
+               showMessage('회의 키를 입력해주세요.', ()=>{
+                   document.getElementById('conferenceKey').focus();
+               });
+               return;
+           }
+           $.ajax({
+               url:`./api/conference/${code}/exist`,
+               success : function(res){
+                   if(!res){
+                       showMessage('해당 코드의 회의 정보가 존재하지 않습니다.', ()=>{});
+                       return;
                    }
-               })
-           });
+                   location.href = './conference?code=' + code + "&type=join&key=" + key;
+               }
+           })
         });
+
+        function uuidv4() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function getPanelistInfo(){
+            $.ajax({
+                url : "./api/panelist",
+                success : function (res){
+                    document.getElementById('expellCount').innerText = res.expellCount;
+                }
+            })
+        }
     </script>
 </div>
 </html>

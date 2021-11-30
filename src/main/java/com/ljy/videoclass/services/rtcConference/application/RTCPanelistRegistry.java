@@ -21,4 +21,8 @@ public class RTCPanelistRegistry {
     public RtcPanelist remove(PanelistId panelistId) {
         return panelists.remove(panelistId);
     }
+
+    public boolean exist(PanelistId panelistId) {
+        return get(panelistId) != null;
+    }
 }

@@ -1,6 +1,7 @@
 let ws;
 let participants = {};
 const QUERY_STRING = getQueryStringObject();
+const JOIN_TYPE = QUERY_STRING.type;
 const CONFERENCE_CODE = QUERY_STRING.code;
 
 const currentPanelistId = document.getElementById('currentPanelistId').value;
@@ -11,11 +12,46 @@ let micFlag = true;
 
 init(CONFERENCE_CODE);
 function init(code){
+	if(CONFERENCE_CODE === undefined || CONFERENCE_CODE === '' || JOIN_TYPE === undefined || JOIN_TYPE === ''){
+		alert('잘못된 접근입니다.');
+		location.href = "./main";
+		return;
+	}
+
+	if(JOIN_TYPE !== 'join' && JOIN_TYPE !== 'create'){
+		alert('잘못된 접근입니다.');
+		location.href = "./main";
+		return;
+	}
+
+	if(JOIN_TYPE === 'join' && (QUERY_STRING.key === undefined || QUERY_STRING.key === '')){
+		alert('잘못된 접근입니다.');
+		location.href = "./main";
+		return;
+	}
+
 	ws = new WebSocket('wss://' + location.host + '/conference/' + code);
 
-	ws.onmessage = function(message) {
+	ws.onopen = () => {
+		if(JOIN_TYPE === 'join'){
+			sendMessage({
+				id : 'join',
+				key : QUERY_STRING.key
+			});
+		}else{
+			sendMessage({
+				id : 'join'
+			});
+		}
+	}
+
+	ws.onmessage = (message) => {
 		var parsedMessage = JSON.parse(message.data);
 		switch (parsedMessage.id) {
+			case "noMatchKey":
+				alert('회의키가 일치하지 않습니다.');
+				location.href = './main';
+				break;
 			case 'existingPanelists':
 				onExistingParticipants(parsedMessage);
 				break;
@@ -30,7 +66,8 @@ function init(code){
 				break;
 			case "conferenceInfo":
 				document.getElementById('conferenceCode').innerText = code;
-				document.getElementById('conferenceDate').innerText = parsedMessage.createDateTime;
+				document.getElementById('conferenceKey').innerText = parsedMessage.key;
+				document.getElementById('conferenceDate').innerText = parseDate(parsedMessage.createDateTime);
 				document.getElementById('conferenceCreator').innerText = parsedMessage.creator;
 				break;
 			case 'beforeMessage':
@@ -49,6 +86,9 @@ function init(code){
 				alert('추방 당했습니다.');
 				location.href = './main';
 				break;
+			case "passCreatorRole":
+
+				break;
 			case 'iceCandidate':
 				participants[parsedMessage.name].rtcPeer.addIceCandidate(parsedMessage.candidate, function (error) {
 					if (error) {
@@ -61,6 +101,16 @@ function init(code){
 				console.error('Unrecognized message', parsedMessage);
 		}
 	}
+}
+
+function parseDate(dateStr){
+	dateStr = dateStr.substring(0, dateStr.indexOf("."));
+	const year = dateStr.substring(0, 4);
+	const month = dateStr.substring(5, 7);
+	const day = dateStr.substring(8, 10);
+	const hour = dateStr.substring(11, 13);
+	const min = dateStr.substring(14, 16);
+	return year + "년 " + month + "월 " + day + "일 " + hour + "시 " + min + "분";
 }
 
 // 화면 공유
@@ -142,13 +192,21 @@ document.getElementById('exitBtn').addEventListener('click', ()=>{
 
 // 코드 복사
 document.getElementById('copyCodeBtn').addEventListener('click', ()=>{
-	const copy = document.getElementById('copyInput');
-	copy.style.display = 'block';
-	copy.value = document.getElementById('conferenceCode').innerText;
-	copy.select();
-	document.execCommand("Copy");
-	copy.style.display = 'none';
+	copy('conferenceCode');
 });
+
+document.getElementById('copyKeyBtn').addEventListener('click', ()=>{
+	copy('conferenceKey');
+});
+
+function copy(elementId){
+	const copyElement = document.getElementById('copyInput');
+	copyElement.style.display = 'block';
+	copyElement.value = document.getElementById(elementId).innerText;
+	copyElement.select();
+	document.execCommand("Copy");
+	copyElement.style.display = 'none';
+}
 
 function expel(name){
 	sendMessage({

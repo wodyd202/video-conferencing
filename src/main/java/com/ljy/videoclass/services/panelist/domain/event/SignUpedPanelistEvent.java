@@ -11,7 +11,7 @@ import lombok.Getter;
 public class SignUpedPanelistEvent {
     private String id;
     private String password;
-    private short expellCount;
+    private int expellCount;
     private PanelistStatus status;
 
     @Builder

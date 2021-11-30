@@ -7,12 +7,11 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class RemovedConferenceMessageStoreEvent {
-    private String conferenceCode;
+public class RemovedConferenceMessageStoreEvent extends ConferenceEvent {
     private List<ChatMessage> chatMessages;
 
     public RemovedConferenceMessageStoreEvent(ConferenceCode conferenceCode, List<ChatMessage> chatMessages) {
-        this.conferenceCode = conferenceCode.get();
+        super(conferenceCode.get());
         this.chatMessages = chatMessages;
     }
 }

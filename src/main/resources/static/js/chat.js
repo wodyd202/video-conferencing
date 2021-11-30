@@ -48,6 +48,7 @@ chatAbleBtn.addEventListener('click', ()=>{
         videoArea.classList.remove('col-12');
         videoArea.classList.add('col-8');
         chatArea.style.display = 'block';
+        chatMessageArea.scrollTop = chatMessageArea.scrollHeight;
     }else{
         videoArea.classList.remove('col-8');
         videoArea.classList.add('col-12');

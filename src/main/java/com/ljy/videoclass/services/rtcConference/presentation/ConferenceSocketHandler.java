@@ -2,14 +2,13 @@ package com.ljy.videoclass.services.rtcConference.presentation;
 
 import com.google.gson.*;
 import com.ljy.videoclass.services.rtcConference.application.RTCConferenceService;
+import com.ljy.videoclass.services.rtcConference.application.RTCPanelistRegistry;
 import com.ljy.videoclass.services.rtcConference.application.RTCPanelistService;
-import com.ljy.videoclass.services.rtcConference.model.ConferenceCode;
-import com.ljy.videoclass.services.rtcConference.model.ChatMessage;
-import com.ljy.videoclass.services.rtcConference.model.PanelistId;
-import com.ljy.videoclass.services.rtcConference.model.SdpInfo;
+import com.ljy.videoclass.services.rtcConference.application.exception.NotMatchKeyException;
+import com.ljy.videoclass.services.rtcConference.model.*;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kurento.client.IceCandidate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -17,24 +16,20 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
+
 @Slf4j
-@Component
 @Profile("!test")
+@Component
+@AllArgsConstructor
 public class ConferenceSocketHandler extends TextWebSocketHandler {
-    private static final Gson gson = new GsonBuilder().create();
-    @Autowired private RTCConferenceService rtcConferenceService;
-    @Autowired private RTCPanelistService rtcPanelistService;
+    private Gson gson;
+    private RTCPanelistRegistry panelistRegistry;
+    private RTCConferenceService rtcConferenceService;
+    private RTCPanelistService rtcPanelistService;
 
-    /**
-     * @param session
-     * # 회의실 입장
-     */
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
-        ConferenceCode conferenceCode = ConferenceCode.of(getConferenceCodeBySessionUri(session));
-
-        rtcConferenceService.join(conferenceCode, PanelistId.of(session.getPrincipal().getName()), session);
-    }
+    public void afterConnectionEstablished(WebSocketSession session) {}
 
     /**
      * @param session
@@ -43,9 +38,12 @@ public class ConferenceSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        ConferenceCode conferenceCode = ConferenceCode.of(getConferenceCodeBySessionUri(session));
+        PanelistId panelistId = PanelistId.of(session.getPrincipal().getName());
+        if(panelistRegistry.exist(panelistId)){
+            ConferenceCode conferenceCode = ConferenceCode.of(getConferenceCodeBySessionUri(session));
 
-        rtcConferenceService.leave(conferenceCode, PanelistId.of(session.getPrincipal().getName()));
+            rtcConferenceService.leave(conferenceCode, panelistId);
+        }
     }
 
     /**
@@ -54,12 +52,23 @@ public class ConferenceSocketHandler extends TextWebSocketHandler {
      * # 메시지 주고 받음
      */
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
         final JsonObject jsonMessage = gson.fromJson(message.getPayload(), JsonObject.class);
         ConferenceCode conferenceCode = ConferenceCode.of(getConferenceCodeBySessionUri(session));
         PanelistId panelistId = PanelistId.of(session.getPrincipal().getName());
 
         switch (getMessageType(jsonMessage)){
+            case "join":
+                try {
+                    ConferenceKey conferenceKey = getConferencekey(jsonMessage);
+                    rtcConferenceService.join(conferenceCode, PanelistId.of(session.getPrincipal().getName()), conferenceKey, session);
+                } catch (NotMatchKeyException e) {
+                    // 사용자가 가져온 키값이 일치하지 않으면 Exception
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("id", "noMatchKey");
+                    session.sendMessage(new TextMessage(jsonObject.toString()));
+                }
+                break;
             case "expel":
                 PanelistId targetPanelistId = PanelistId.of(jsonMessage.get("targetPanelistId").getAsString());
                 rtcConferenceService.expel(conferenceCode, targetPanelistId, panelistId);
@@ -85,6 +94,10 @@ public class ConferenceSocketHandler extends TextWebSocketHandler {
                 rtcPanelistService.onIceCandidate(iceCandidate, panelistId, iceSender);
                 break;
         }
+    }
+
+    private ConferenceKey getConferencekey(JsonObject jsonMessage) {
+        return jsonMessage.get("key") == null ? null : ConferenceKey.of(jsonMessage.get("key").getAsString());
     }
 
     private String getMessageType(JsonObject jsonMessage){

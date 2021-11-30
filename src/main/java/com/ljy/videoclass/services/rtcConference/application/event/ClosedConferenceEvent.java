@@ -6,11 +6,10 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class ClosedConferenceEvent {
-    private String conferenceCode;
+public class ClosedConferenceEvent extends ConferenceEvent {
     private LocalDateTime closeDateTime;
     public ClosedConferenceEvent(ConferenceCode conferenceCode) {
-        this.conferenceCode = conferenceCode.get();
+        super(conferenceCode.get());
         closeDateTime = LocalDateTime.now();
     }
 }
