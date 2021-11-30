@@ -1,7 +1,6 @@
 # Video Confernece(화상 회의 서비스)  
 ###
 ##
-#### Stack
 
 
 
