@@ -15,17 +15,16 @@ import java.util.concurrent.ConcurrentMap;
 
 @Slf4j
 @Component
-@Profile("!test")
 public class ConferenceManager {
-    @Autowired private KurentoClient kurentoClient;
+    @Autowired(required = false) private KurentoClient kurentoClient;
     private ConcurrentMap<ConferenceCode, RtcConference> conferences = new ConcurrentHashMap<>();
 
     public Optional<RtcConference> getByCode(ConferenceCode conferenceCode) {
         return Optional.ofNullable(conferences.get(conferenceCode));
     }
 
-    public RtcConference createByCode(ConferenceCode conferenceCode, PanelistId panelistId) {
-        RtcConference conference = new RtcConference(panelistId, conferenceCode, kurentoClient.createMediaPipeline());
+    public RtcConference createByCode(ConferenceCode conferenceCode) {
+        RtcConference conference = new RtcConference(conferenceCode, kurentoClient.createMediaPipeline());
         conferences.put(conferenceCode, conference);
         return conference;
     }

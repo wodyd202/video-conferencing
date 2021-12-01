@@ -5,7 +5,6 @@ import com.ljy.videoclass.services.rtcConference.application.event.ExpeledPaneli
 import com.ljy.videoclass.services.rtcConference.application.event.OpenedConferenceEvent;
 import com.ljy.videoclass.services.rtcConference.application.exception.ConferenceNotFoundException;
 import com.ljy.videoclass.services.rtcConference.application.exception.NotMatchKeyException;
-import com.ljy.videoclass.services.rtcConference.application.util.SimplePermissionValidator;
 import com.ljy.videoclass.services.rtcConference.model.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
+
+import java.util.UUID;
 
 /**
  *  화상회의 서비스
@@ -31,32 +32,45 @@ public class RTCConferenceService {
     private ApplicationEventPublisher applicationEventPublisher;
 
     /**
+     * @param openerId
+     * @param conferenceCode
+     * @param openerSession
+     */
+    public void open(PanelistId openerId, ConferenceCode conferenceCode, WebSocketSession openerSession) {
+        RtcConference conference = conferenceManager.createByCode(conferenceCode);
+        RtcPanelist panelist = conference.getCreator(permissionValidator, openerId, openerSession);
+
+        conference.open(permissionValidator, panelist);
+
+        applicationEventPublisher.publishEvent(new OpenedConferenceEvent(conferenceCode, openerId));
+
+        panelistRegistry.register(panelist);
+        log.info("open conference : ", conferenceCode);
+    }
+
+    private ConferenceCode createConferenceCode() {
+        return ConferenceCode.of(UUID.randomUUID().toString());
+    }
+
+    /**
      * @param conferenceCode 회의 코드
      * @param joinerId 참여자 아이디
      * @param key
      * @param joinerSession 참여자 세션
+     * # 회의 참여
      */
     synchronized public void join(ConferenceCode conferenceCode,
                                   PanelistId joinerId,
                                   ConferenceKey key,
-                                  WebSocketSession joinerSession) throws NotMatchKeyException {
-        RtcConference conference;
-        if(conferenceManager.existByCode(conferenceCode)){
-            // 기존 회의 정보가 존재한다면 사용자가 입력한 키값이 일치하는지 확인
-            conference = conferenceManager.getByCode(conferenceCode).get();
-            log.info("exist conference : {}", conferenceCode);
-        }else{
-            // 만약 존재하지 않다면 새로 생성
-            applicationEventPublisher.publishEvent(new OpenedConferenceEvent(conferenceCode, joinerId));
-            conference = conferenceManager.createByCode(conferenceCode, joinerId);
-            log.info("not exist conference : {}", conferenceCode);
-        }
+                                  WebSocketSession joinerSession) throws NotMatchKeyException, ConferenceNotFoundException {
+        // 회의 정보 가져옴
+        RtcConference conference = getConference(conferenceCode);
 
         // 회의로 부터 회의 참여 권한을 생성
-        RtcPanelist panelist = conference.getPermissionToParticipate(joinerId, joinerSession);
+        RtcPanelist panelist = conference.getPermissionToParticipate(permissionValidator, joinerId, key, joinerSession);
 
         // 회의 참여
-        conference.join(permissionValidator, panelist, key);
+        conference.join(panelist);
 
         // 회의 참여중인 인원에 추가
         panelistRegistry.register(panelist);
@@ -70,7 +84,7 @@ public class RTCConferenceService {
      * @param conferenceCode 회의 코드
      * @param leaverId 퇴장자 아이디
      */
-    synchronized public void leave(ConferenceCode conferenceCode, PanelistId leaverId) {
+    synchronized public void leave(ConferenceCode conferenceCode, PanelistId leaverId) throws ConferenceNotFoundException {
         // 회의 정보 가져옴
         RtcConference conference = getConference(conferenceCode);
         RtcPanelist rtcPanelist = panelistRegistry.get(leaverId);
@@ -88,7 +102,7 @@ public class RTCConferenceService {
         }
     }
 
-    private RtcConference getConference(ConferenceCode conferenceCode) {
+    private RtcConference getConference(ConferenceCode conferenceCode) throws ConferenceNotFoundException {
         return conferenceManager.getByCode(conferenceCode).orElseThrow(ConferenceNotFoundException::new);
     }
 
@@ -98,7 +112,7 @@ public class RTCConferenceService {
      * @param who
      * # 회의자 추방
      */
-    public void expel(ConferenceCode conferenceCode, PanelistId target, PanelistId who) {
+    public void expel(ConferenceCode conferenceCode, PanelistId target, PanelistId who) throws ConferenceNotFoundException {
         // 회의 정보 가져옴
         RtcConference conference = getConference(conferenceCode);
 
@@ -112,7 +126,7 @@ public class RTCConferenceService {
      * @param conferenceCode
      * # 흔들기
      */
-    public void shake(ConferenceCode conferenceCode, PanelistId who) {
+    public void shake(ConferenceCode conferenceCode, PanelistId who) throws ConferenceNotFoundException {
         // 회의 정보 가져옴
         RtcConference conference = getConference(conferenceCode);
 
@@ -124,7 +138,7 @@ public class RTCConferenceService {
      * @param conferenceCode
      * @param chatMessage
      */
-    public void sendChatMessage(ConferenceCode conferenceCode, ChatMessage chatMessage) {
+    public void sendChatMessage(ConferenceCode conferenceCode, ChatMessage chatMessage) throws ConferenceNotFoundException {
         // 회의 정보 가져옴
         RtcConference conference = getConference(conferenceCode);
 

@@ -3,7 +3,6 @@ package com.ljy.videoclass.services.rtcConference.model;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.ljy.videoclass.services.rtcConference.application.util.SimplePermissionValidator;
 import com.ljy.videoclass.services.rtcConference.application.exception.NotMatchKeyException;
 import lombok.extern.slf4j.Slf4j;
 import org.kurento.client.MediaPipeline;
@@ -26,15 +25,11 @@ public class RtcConference implements Closeable {
     private ConcurrentMap<PanelistId, RtcPanelist> joinPanelists = new ConcurrentHashMap<>();
     private MediaPipeline pipeline;
 
-    private boolean isNew;
-
-    public RtcConference(PanelistId creator, ConferenceCode code, MediaPipeline pipeline) {
-        this.creatorId = creator;
+    public RtcConference(ConferenceCode code, MediaPipeline pipeline) {
         this.code = code;
         this.key = createKey();
         this.createDateTime = LocalDateTime.now();
         this.pipeline = pipeline;
-        this.isNew = true;
     }
 
     private ConferenceKey createKey() {
@@ -43,16 +38,22 @@ public class RtcConference implements Closeable {
 
     /**
      * @param permissionValidator
+     * # 회의 개설
+     */
+    public void open(PermissionValidator permissionValidator, RtcPanelist creator){
+        permissionValidator.validation(creator.getPanelistId());
+        creatorId = creator.getPanelistId();
+
+        sendConferenceInfoMsg(creator);
+
+        sendExistingPanelistMsg(creator, new JsonArray());
+        joinPanelists.put(creator.getPanelistId(), creator);
+    }
+
+    /**
      * @param joiner 참여자
      */
-    public void join(PermissionValidator permissionValidator, RtcPanelist joiner, ConferenceKey key) throws NotMatchKeyException {
-        permissionValidator.validation(joiner.getPanelistId());
-        // 이미 존재하던 회의일 경우
-        if(!isNew){
-            if(!matchKey(key)){
-                throw new NotMatchKeyException();
-            }
-        }
+    public void join(RtcPanelist joiner) {
         final JsonObject newParticipantMsg = createNewParticipantMsg(joiner);
 
         // 기존 회의자들에게 메시지 보내고 기존 회의자 목록 가져옴
@@ -70,7 +71,6 @@ public class RtcConference implements Closeable {
 
         // 회의실 입장
         joinPanelists.put(joiner.getPanelistId(), joiner);
-        isNew = false;
     }
 
     private boolean matchKey(ConferenceKey key) {
@@ -109,7 +109,21 @@ public class RtcConference implements Closeable {
         return existingPanelistMsg;
     }
 
-    public RtcPanelist getPermissionToParticipate(PanelistId joinerId, WebSocketSession joinerSession) {
+    public RtcPanelist getCreator(PermissionValidator permissionValidator,
+                                  PanelistId creatorId,
+                                  WebSocketSession creatorSession){
+        permissionValidator.validation(creatorId);
+        return new RtcPanelist(creatorId, creatorSession, pipeline);
+    }
+
+    public RtcPanelist getPermissionToParticipate(PermissionValidator permissionValidator,
+                                                  PanelistId joinerId,
+                                                  ConferenceKey key,
+                                                  WebSocketSession joinerSession) throws NotMatchKeyException {
+        if(!matchKey(key)){
+            throw new NotMatchKeyException();
+        }
+        permissionValidator.validation(joinerId);
         return new RtcPanelist(joinerId, joinerSession, pipeline);
     }
 

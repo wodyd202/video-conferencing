@@ -17,7 +17,7 @@ public class ChatMessageRepository_Test {
     @Test
     void 해당_회의에_누적된_메시지_개수_가져옴(){
         // given
-        ConferenceCode conferenceCode = ConferenceCode.of("conferenceCode");
+        ConferenceCode conferenceCode = ConferenceCode.of("conference");
         for(int i =0;i<5;i++){
             chatMessageRepository.save(conferenceCode, ChatMessage.builder()
                     .message("MESSAGE")

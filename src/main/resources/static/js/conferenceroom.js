@@ -12,7 +12,7 @@ let micFlag = true;
 
 init(CONFERENCE_CODE);
 function init(code){
-	if(CONFERENCE_CODE === undefined || CONFERENCE_CODE === '' || JOIN_TYPE === undefined || JOIN_TYPE === ''){
+	if((CONFERENCE_CODE === undefined || CONFERENCE_CODE === '') && (JOIN_TYPE === undefined || JOIN_TYPE === '')){
 		alert('잘못된 접근입니다.');
 		location.href = "./main";
 		return;
@@ -40,7 +40,7 @@ function init(code){
 			});
 		}else{
 			sendMessage({
-				id : 'join'
+				id : 'open'
 			});
 		}
 	}
@@ -48,7 +48,7 @@ function init(code){
 	ws.onmessage = (message) => {
 		var parsedMessage = JSON.parse(message.data);
 		switch (parsedMessage.id) {
-			case "noMatchKey":
+			case "notMatchKey":
 				alert('회의키가 일치하지 않습니다.');
 				location.href = './main';
 				break;
@@ -65,7 +65,7 @@ function init(code){
 				receiveVideoResponse(parsedMessage);
 				break;
 			case "conferenceInfo":
-				document.getElementById('conferenceCode').innerText = code;
+				document.getElementById('conferenceCode').innerText = parsedMessage.code;
 				document.getElementById('conferenceKey').innerText = parsedMessage.key;
 				document.getElementById('conferenceDate').innerText = parseDate(parsedMessage.createDateTime);
 				document.getElementById('conferenceCreator').innerText = parsedMessage.creator;

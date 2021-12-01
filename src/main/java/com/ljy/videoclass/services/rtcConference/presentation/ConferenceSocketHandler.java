@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.ljy.videoclass.services.rtcConference.application.RTCConferenceService;
 import com.ljy.videoclass.services.rtcConference.application.RTCPanelistRegistry;
 import com.ljy.videoclass.services.rtcConference.application.RTCPanelistService;
+import com.ljy.videoclass.services.rtcConference.application.exception.ConferenceNotFoundException;
 import com.ljy.videoclass.services.rtcConference.application.exception.NotMatchKeyException;
 import com.ljy.videoclass.services.rtcConference.model.*;
 import lombok.AllArgsConstructor;
@@ -28,9 +29,6 @@ public class ConferenceSocketHandler extends TextWebSocketHandler {
     private RTCConferenceService rtcConferenceService;
     private RTCPanelistService rtcPanelistService;
 
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) {}
-
     /**
      * @param session
      * @param status
@@ -42,7 +40,11 @@ public class ConferenceSocketHandler extends TextWebSocketHandler {
         if(panelistRegistry.exist(panelistId)){
             ConferenceCode conferenceCode = ConferenceCode.of(getConferenceCodeBySessionUri(session));
 
-            rtcConferenceService.leave(conferenceCode, panelistId);
+            try {
+                rtcConferenceService.leave(conferenceCode, panelistId);
+            } catch (ConferenceNotFoundException e) {
+                // 가능성 없음
+            }
         }
     }
 
@@ -58,42 +60,132 @@ public class ConferenceSocketHandler extends TextWebSocketHandler {
         PanelistId panelistId = PanelistId.of(session.getPrincipal().getName());
 
         switch (getMessageType(jsonMessage)){
+            case "open":
+                handleOpen(panelistId, conferenceCode, session);
+                break;
             case "join":
-                try {
-                    ConferenceKey conferenceKey = getConferencekey(jsonMessage);
-                    rtcConferenceService.join(conferenceCode, PanelistId.of(session.getPrincipal().getName()), conferenceKey, session);
-                } catch (NotMatchKeyException e) {
-                    // 사용자가 가져온 키값이 일치하지 않으면 Exception
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("id", "noMatchKey");
-                    session.sendMessage(new TextMessage(jsonObject.toString()));
-                }
+                handleJoin(jsonMessage, conferenceCode, session);
                 break;
             case "expel":
-                PanelistId targetPanelistId = PanelistId.of(jsonMessage.get("targetPanelistId").getAsString());
-                rtcConferenceService.expel(conferenceCode, targetPanelistId, panelistId);
+                handleExpel(jsonMessage, conferenceCode, panelistId, session);
                 break;
             case "shake":
-                rtcConferenceService.shake(conferenceCode, panelistId);
+                handleShake(conferenceCode, panelistId, session);
                 break;
             case "chat":
-                ChatMessage chatMessage = ChatMessage.builder()
-                        .sender(panelistId.get())
-                        .message(jsonMessage.get("message").getAsString())
-                        .build();
-                rtcConferenceService.sendChatMessage(conferenceCode, chatMessage);
+                handleChat(jsonMessage, panelistId, conferenceCode, session);
                 break;
             case "receiveVideoFrom":
-                PanelistId sender = PanelistId.of(jsonMessage.get("sender").getAsString());
-                SdpInfo sdpInfo = new SdpInfo(jsonMessage.get("sdpOffer").getAsString());
-                rtcPanelistService.receiveVideoFrom(sdpInfo, sender, panelistId);
+                handleReceiveVideoFrom(jsonMessage, panelistId);
                 break;
             case "onIceCandidate":
-                IceCandidate iceCandidate = createIceCandidateViaJsonObject(jsonMessage);
-                PanelistId iceSender = PanelistId.of(jsonMessage.get("name").getAsString());
-                rtcPanelistService.onIceCandidate(iceCandidate, panelistId, iceSender);
+                handleIceCandidate(jsonMessage, panelistId);
                 break;
         }
+    }
+
+    /**
+     * @param panelistId
+     * @param session
+     * # 화상 회의 개설
+     */
+    private void handleOpen(PanelistId panelistId, ConferenceCode conferenceCode, WebSocketSession session) {
+        rtcConferenceService.open(panelistId, conferenceCode, session);
+    }
+
+    /**
+     * @param jsonMessage
+     * @param panelistId
+     * # 후보자가 등록되었을때
+     */
+    private void handleIceCandidate(JsonObject jsonMessage, PanelistId panelistId) {
+        IceCandidate iceCandidate = createIceCandidateViaJsonObject(jsonMessage);
+        PanelistId iceSender = PanelistId.of(jsonMessage.get("name").getAsString());
+        rtcPanelistService.onIceCandidate(iceCandidate, panelistId, iceSender);
+    }
+
+    /**
+     * @param jsonMessage
+     * @param panelistId
+     * # 다른 사용자에게 SDP 정보를 받음
+     */
+    private void handleReceiveVideoFrom(JsonObject jsonMessage, PanelistId panelistId) {
+        PanelistId sender = PanelistId.of(jsonMessage.get("sender").getAsString());
+        SdpInfo sdpInfo = new SdpInfo(jsonMessage.get("sdpOffer").getAsString());
+        rtcPanelistService.receiveVideoFrom(sdpInfo, sender, panelistId);
+    }
+
+    /**
+     * @param jsonMessage
+     * @param panelistId
+     * @param conferenceCode
+     * @param session
+     * # 채팅
+     */
+    private void handleChat(JsonObject jsonMessage, PanelistId panelistId, ConferenceCode conferenceCode, WebSocketSession session) throws IOException {
+        ChatMessage chatMessage = ChatMessage.builder()
+                .sender(panelistId.get())
+                .message(jsonMessage.get("message").getAsString())
+                .build();
+        try {
+            rtcConferenceService.sendChatMessage(conferenceCode, chatMessage);
+        } catch (ConferenceNotFoundException e) {
+            sendMessage(session, "notFound");
+        }
+    }
+
+    /**
+     * @param conferenceCode
+     * @param panelistId
+     * @param session
+     * # 손 흔들기
+     */
+    private void handleShake(ConferenceCode conferenceCode, PanelistId panelistId, WebSocketSession session) throws IOException {
+        try {
+            rtcConferenceService.shake(conferenceCode, panelistId);
+        } catch (ConferenceNotFoundException e) {
+            sendMessage(session, "notFound");
+        }
+    }
+
+    /**
+     * @param jsonMessage
+     * @param conferenceCode
+     * @param session
+     * # 회의 참여
+     */
+    private void handleJoin(JsonObject jsonMessage, ConferenceCode conferenceCode, WebSocketSession session) throws IOException {
+        try {
+            ConferenceKey conferenceKey = getConferencekey(jsonMessage);
+            rtcConferenceService.join(conferenceCode, PanelistId.of(session.getPrincipal().getName()), conferenceKey, session);
+        } catch (NotMatchKeyException e) {
+            sendMessage(session, "notMatchKey");
+            // 사용자가 가져온 키값이 일치하지 않으면 Exception
+        } catch (ConferenceNotFoundException e) {
+            sendMessage(session, "notFound");
+        }
+    }
+
+    /**
+     * @param jsonMessage
+     * @param conferenceCode
+     * @param panelistId
+     * @param session
+     * # 회의에서 추방
+     */
+    private void handleExpel(JsonObject jsonMessage, ConferenceCode conferenceCode, PanelistId panelistId, WebSocketSession session) throws IOException {
+        PanelistId targetPanelistId = PanelistId.of(jsonMessage.get("targetPanelistId").getAsString());
+        try {
+            rtcConferenceService.expel(conferenceCode, targetPanelistId, panelistId);
+        } catch (ConferenceNotFoundException e) {
+            sendMessage(session, "notFound");
+        }
+    }
+
+    private void sendMessage(WebSocketSession session, String id) throws IOException {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", id);
+        session.sendMessage(new TextMessage(jsonObject.toString()));
     }
 
     private ConferenceKey getConferencekey(JsonObject jsonMessage) {
